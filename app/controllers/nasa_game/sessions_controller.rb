@@ -2,6 +2,8 @@
 
 module NasaGame
   class SessionsController < BaseController
+    include UserAuthentication
+
     before_action :set_session, only: %i[show update]
 
     def new
@@ -15,6 +17,7 @@ module NasaGame
 
       ActiveRecord::Base.transaction do
         @session.save!
+        @session.facilitators.create!(user: current_user)
         group_count.times do |i|
           @session.groups.create!(
             name: "グループ #{i + 1}",
