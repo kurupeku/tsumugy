@@ -57,8 +57,59 @@ RSpec.describe NasaGame::Session, type: :model do
   end
 
   describe "associations" do
+    it { is_expected.to have_many(:facilitators).class_name("NasaGame::Facilitator").dependent(:destroy) }
     it { is_expected.to have_many(:groups).class_name("NasaGame::Group").dependent(:destroy) }
     it { is_expected.to have_many(:participants).class_name("NasaGame::Participant").dependent(:destroy) }
+  end
+
+  describe "expires_at" do
+    subject(:session) { create(:nasa_game_session) }
+
+    it "sets default expires_at to 1 day from now on create" do
+      expect(session.expires_at).to be_within(1.second).of(1.day.from_now)
+    end
+  end
+
+  describe "#expired?" do
+    it "returns true when expires_at is in the past" do
+      session = build(:nasa_game_session, expires_at: 1.hour.ago)
+      expect(session).to be_expired
+    end
+
+    it "returns false when expires_at is in the future" do
+      session = build(:nasa_game_session, expires_at: 1.hour.from_now)
+      expect(session).not_to be_expired
+    end
+  end
+
+  describe "scopes" do
+    describe ".expired" do
+      it "returns sessions with expires_at in the past" do
+        expired_session = create(:nasa_game_session, expires_at: 1.hour.ago)
+        active_session = create(:nasa_game_session, expires_at: 1.hour.from_now)
+
+        expect(described_class.expired).to include(expired_session)
+        expect(described_class.expired).not_to include(active_session)
+      end
+    end
+
+    describe ".active" do
+      it "returns sessions with expires_at in the future" do
+        expired_session = create(:nasa_game_session, expires_at: 1.hour.ago)
+        active_session = create(:nasa_game_session, expires_at: 1.hour.from_now)
+
+        expect(described_class.active).to include(active_session)
+        expect(described_class.active).not_to include(expired_session)
+      end
+    end
+  end
+
+  describe "#extend_expiration!" do
+    it "extends expires_at to 1 day from now" do
+      session = create(:nasa_game_session, expires_at: 1.hour.ago)
+      session.extend_expiration!
+      expect(session.expires_at).to be_within(1.second).of(1.day.from_now)
+    end
   end
 
   describe "phase transitions" do
