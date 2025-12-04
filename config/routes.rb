@@ -11,6 +11,9 @@ Rails.application.routes.draw do
 
   # NASA Game routes
   namespace :nasa_game do
+    # Landing page - redirect based on user role
+    root to: "landing#index"
+
     # Facilitator: session management
     resources :sessions, only: %i[new create show update]
 
