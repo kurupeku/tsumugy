@@ -49,7 +49,7 @@ RUN pnpm dlx playwright install chromium
 COPY . .
 
 EXPOSE 3000
-CMD ["bin/dev"]
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]
 
 # =============================================================================
 # Production build stage
