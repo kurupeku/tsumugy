@@ -1,0 +1,16 @@
+<%# locals: (phase:) %>
+<%
+  colors = {
+    "lobby" => "badge-info",
+    "individual" => "badge-warning",
+    "team" => "badge-secondary",
+    "result" => "badge-success"
+  }
+  labels = {
+    "lobby" => "ロビー",
+    "individual" => "個人ワーク",
+    "team" => "チームワーク",
+    "result" => "結果発表"
+  }
+%>
+<div class="badge <%= colors[phase] %>"><%= labels[phase] %></div>

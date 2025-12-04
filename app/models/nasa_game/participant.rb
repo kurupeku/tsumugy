@@ -2,6 +2,10 @@
 
 module NasaGame
   class Participant < ApplicationRecord
+    belongs_to :user,
+               class_name: "User",
+               inverse_of: :nasa_game_participants
+
     belongs_to :session,
                class_name: "NasaGame::Session",
                inverse_of: :participants
@@ -17,18 +21,10 @@ module NasaGame
              inverse_of: :participant
 
     validates :display_name, presence: true
-    validates :session_token, presence: true, uniqueness: true
-
-    before_validation :generate_session_token, on: :create
+    validates :user_id, uniqueness: { scope: :session_id, message: "このセッションには既に参加しています" }
 
     def individual_completed?
       individual_completed_at.present?
-    end
-
-    private
-
-    def generate_session_token
-      self.session_token ||= SecureRandom.urlsafe_base64(32)
     end
   end
 end

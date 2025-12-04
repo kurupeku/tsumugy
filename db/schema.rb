@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_140641) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_165550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,14 +47,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_140641) do
   create_table "nasa_game_participants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "session_id", null: false
     t.uuid "group_id", null: false
-    t.string "session_token", null: false
     t.string "display_name", null: false
     t.datetime "individual_completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["group_id"], name: "index_nasa_game_participants_on_group_id"
     t.index ["session_id"], name: "index_nasa_game_participants_on_session_id"
-    t.index ["session_token"], name: "index_nasa_game_participants_on_session_token", unique: true
+    t.index ["user_id", "session_id"], name: "index_nasa_game_participants_on_user_id_and_session_id", unique: true
+    t.index ["user_id"], name: "index_nasa_game_participants_on_user_id"
   end
 
   create_table "nasa_game_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -63,9 +64,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_140641) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "session_token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expires_at", default: -> { "(now() + 'P1D'::interval)" }, null: false
+    t.index ["expires_at"], name: "index_users_on_expires_at"
+    t.index ["session_token"], name: "index_users_on_session_token", unique: true
+  end
+
   add_foreign_key "nasa_game_group_rankings", "nasa_game_groups", column: "group_id"
   add_foreign_key "nasa_game_groups", "nasa_game_sessions", column: "session_id"
   add_foreign_key "nasa_game_individual_rankings", "nasa_game_participants", column: "participant_id"
   add_foreign_key "nasa_game_participants", "nasa_game_groups", column: "group_id"
   add_foreign_key "nasa_game_participants", "nasa_game_sessions", column: "session_id"
+  add_foreign_key "nasa_game_participants", "users"
 end

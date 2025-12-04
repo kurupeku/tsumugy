@@ -1,0 +1,52 @@
+<% content_for(:title) { "セッション作成 | NASAゲーム" } %>
+
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="card bg-base-100 shadow-xl w-full max-w-md">
+    <div class="card-body">
+      <%# Header %>
+      <div class="text-center mb-6">
+        <div class="text-6xl mb-4">🚀</div>
+        <h1 class="card-title justify-center text-2xl">NASAゲーム</h1>
+        <p class="text-base-content/70">月面からの脱出</p>
+      </div>
+
+      <%# Form %>
+      <%= form_with url: nasa_game_sessions_path, method: :post, class: "space-y-6" do |f| %>
+        <div class="form-control">
+          <label class="label" for="group_count">
+            <span class="label-text text-lg">グループ数</span>
+          </label>
+          <input
+            type="number"
+            id="group_count"
+            name="group_count"
+            min="1"
+            max="20"
+            value="4"
+            class="input input-bordered input-lg w-full text-center text-2xl"
+            required
+          />
+          <label class="label">
+            <span class="label-text-alt text-base-content/60">
+              1〜20グループまで作成できます
+            </span>
+          </label>
+        </div>
+
+        <div class="card-actions">
+          <%= f.submit "セッションを作成", class: "btn btn-primary btn-lg w-full" %>
+        </div>
+      <% end %>
+
+      <%# Info %>
+      <div class="divider">ゲームの流れ</div>
+      <ul class="steps steps-vertical text-sm">
+        <li class="step step-primary">グループURLを参加者に共有</li>
+        <li class="step">参加者がロビーに集合</li>
+        <li class="step">個人ワーク開始</li>
+        <li class="step">チームワーク開始</li>
+        <li class="step">結果発表</li>
+      </ul>
+    </div>
+  </div>
+</div>

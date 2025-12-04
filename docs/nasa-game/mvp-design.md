@@ -10,6 +10,7 @@ NASA「月面からの脱出」ゲームの MVP 実装設計。チームビル�
 2. **UUID 主キー**: 全テーブルで UUID を使用（推測不可能な URL）
 3. **ActiveHash**: 静的データ（15 アイテム）は DB に入れず ActiveHash で管理
 4. **RESTful**: Rails Way に沿った URL 設計
+5. **アプリ共通 User**: Cookie 管理をアプリ全体で統一し、各ゲームの参加者と紐づける
 
 ## ゲームフロー
 
@@ -22,6 +23,7 @@ NASA「月面からの脱出」ゲームの MVP 実装設計。チームビル�
   グループURL共有 ──────────────────→ URL クリック
       |                               |
       |                           表示名入力
+      |                           (User 自動作成)
       |                               |
       |                           グループ参加
       |                               |
@@ -62,6 +64,12 @@ NASA「月面からの脱出」ゲームの MVP 実装設計。チームビル�
 ## ドメインモデル
 
 ```
+User (アプリ共通)
+  |-- session_token (Cookie 識別用, unique)
+  |-- timestamps
+  |
+  +-- NasaGame::Participant (各ゲームへの参加)
+
 NasaGame::Item (ActiveHash)
   - 15個のアイテム静的データ
   - correct_rank, reasoning を持つ
@@ -75,27 +83,40 @@ NasaGame::Session
   |     +-- NasaGame::GroupRanking (15件)
   |
   +-- NasaGame::Participant (複数)
-        |-- session_token (Cookie識別用)
+        |-- user_id (FK -> users)
         |-- display_name
         |-- group_id (所属グループ)
         |-- individual_completed_at
         +-- NasaGame::IndividualRanking (15件)
 ```
 
+### User モデルの役割
+
+- **アプリ全体で 1 つの Cookie** で識別（ゲームごとの Cookie 管理が不要）
+- 初回アクセス時に自動作成、Cookie に `session_token` を保存
+- 各ゲームの `Participant` は `User` に紐づく
+- 将来の別ゲーム追加時も同じ `User` を再利用可能
+
 ## データベーステーブル
 
-全テーブル UUID 主キー、テーブル名は `nasa_game_` プレフィックス。
+全テーブル UUID 主キー。
+
+### users（アプリ共通）
+
+- id: uuid (PK)
+- session_token: string (unique, not null)
+- timestamps
 
 ### nasa_game_sessions
 
 - id: uuid (PK)
-- phase: integer (enum)
+- phase: integer (enum, default: 0)
 - timestamps
 
 ### nasa_game_groups
 
 - id: uuid (PK)
-- session_id: uuid (FK)
+- session_id: uuid (FK -> nasa_game_sessions)
 - name: string
 - position: integer
 - completed_at: datetime (null 可)
@@ -104,17 +125,18 @@ NasaGame::Session
 ### nasa_game_participants
 
 - id: uuid (PK)
-- session_id: uuid (FK)
-- group_id: uuid (FK)
-- session_token: string (unique)
+- user_id: uuid (FK -> users)
+- session_id: uuid (FK -> nasa_game_sessions)
+- group_id: uuid (FK -> nasa_game_groups)
 - display_name: string
 - individual_completed_at: datetime (null 可)
 - timestamps
+- unique index: [user_id, session_id] （1 ユーザー 1 セッションに 1 参加）
 
 ### nasa_game_individual_rankings
 
 - id: uuid (PK)
-- participant_id: uuid (FK)
+- participant_id: uuid (FK -> nasa_game_participants)
 - item_id: integer (ActiveHash ID)
 - rank: integer (1-15)
 - timestamps
@@ -123,7 +145,7 @@ NasaGame::Session
 ### nasa_game_group_rankings
 
 - id: uuid (PK)
-- group_id: uuid (FK)
+- group_id: uuid (FK -> nasa_game_groups)
 - item_id: integer (ActiveHash ID)
 - rank: integer (1-15)
 - timestamps
@@ -132,26 +154,64 @@ NasaGame::Session
 ## URL 設計
 
 ```
-/nasa_game/sessions/new          # セッション作成
-/nasa_game/sessions/:id          # セッション詳細（リダイレクト用）
-/nasa_game/sessions/:id/dashboard  # ファシリテーター用ダッシュボード
+# ファシリテーター
+/nasa_game/sessions/new              # セッション作成
+/nasa_game/sessions/:id              # ダッシュボード（ファシリテーター用）
 
-/nasa_game/groups/:id/join       # 参加画面
-/nasa_game/groups/:id/lobby      # ロビー
-/nasa_game/groups/:id/individual_work  # 個人ワーク
-/nasa_game/groups/:id/team_work  # チームワーク
-/nasa_game/groups/:id/result     # 結果
+# 参加者フロー
+/nasa_game/groups/:group_id/participants/new    # 参加フォーム（招待リンク）
+/nasa_game/groups/:group_id/participants        # POST: 参加登録
+/nasa_game/participants/:id                     # 参加者画面（フェーズに応じて表示切替）
+
+# ランキング操作
+/nasa_game/participants/:participant_id/individual_rankings  # 個人ランキング
+/nasa_game/groups/:group_id/group_rankings                   # グループランキング
 ```
 
 ## ユーザー識別
 
-- ユーザー登録なし（ゲスト参加）
-- `session_token` を Cookie に保存して識別
-- グループ移動時は個人ワークをリセット
+### 認証フロー
 
-## リアルタイム同期
+1. ユーザーが参加フォームにアクセス
+2. Cookie に `session_token` がなければ `User` を自動作成
+3. Cookie に `session_token` を保存（httponly, 1 日有効）
+4. 参加フォーム送信時に `User` と `Participant` を紐づけ
+5. 以降のアクセスは Cookie から `User` → `Participant` を特定
 
-Action Cable を使用。
+### 認証 Concern
+
+```ruby
+# app/controllers/concerns/user_authentication.rb
+module UserAuthentication
+  COOKIE_KEY = :tsumugy_session_token
+
+  def current_user
+    @current_user ||= find_or_create_user_from_cookie
+  end
+
+  private
+
+  def find_or_create_user_from_cookie
+    token = cookies.signed[COOKIE_KEY]
+    user = User.find_by(session_token: token) if token
+    user || create_and_store_user
+  end
+
+  def create_and_store_user
+    user = User.create!
+    cookies.signed[COOKIE_KEY] = {
+      value: user.session_token,
+      expires: 1.day.from_now,
+      httponly: true
+    }
+    user
+  end
+end
+```
+
+## リアルタイム同期（MVP 後）
+
+Action Cable を使用予定。
 
 ### NasaGame::SessionChannel
 
@@ -192,15 +252,43 @@ Action Cable を使用。
 - アバター
 - ファシリテーター認証
 - データ永続化（セッション終了後削除）
+- リアルタイム同期（Action Cable）
 
 ## 技術スタック
 
 - Rails 8.0 + Ruby 3.4
 - PostgreSQL 16 (UUID 拡張)
 - Hotwire (Turbo + Stimulus)
-- Action Cable (Solid Cable)
-- Tailwind CSS 4 + DaisyUI 5
+- Tailwind CSS 4 + DaisyUI 5 (Puma plugin で CSS ビルド)
 - ActiveHash
+- RSpec + FactoryBot + Playwright (System Specs)
+
+## 実装進捗
+
+### 完了
+
+- [x] プロジェクト初期設定（Rails 8.0, Tailwind CSS 4, DaisyUI 5）
+- [x] Docker Compose 環境構築
+- [x] Puma plugin による Tailwind CSS ビルド設定
+- [x] NasaGame::Item (ActiveHash) - 15 アイテム静的データ
+- [x] NasaGame::Session モデル + フェーズ enum
+- [x] NasaGame::Group モデル
+- [x] NasaGame::Participant モデル
+- [x] NasaGame::IndividualRanking モデル
+- [x] NasaGame::GroupRanking モデル
+- [x] 参加者用ビュー（ロビー、個人ワーク、チームワーク、結果）
+- [x] ファシリテーター用ビュー（セッション作成、ダッシュボード）
+- [x] モデル単体テスト (RSpec)
+- [x] System テスト基盤 (Playwright)
+- [x] User モデル導入（アプリ共通 Cookie 管理 + expires_at による有効期限管理）
+- [x] NasaGame::Participant を User に紐づけるリファクタリング
+- [x] System テスト修正（User ベースの認証フロー）
+
+### 未着手
+
+- [ ] リアルタイム同期 (Action Cable)
+- [ ] ファシリテーターからのフェーズ制御
+- [ ] 期限切れユーザーのクリーンアップバッチ（MVP 後対応）
 
 ## 15 アイテム正解データ
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html data-theme="night">
+  <head>
+    <title><%= content_for(:title) || "NASAゲーム | Tsumugy" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-base-200 min-h-screen">
+    <%= yield %>
+
+    <%# Toast container for flash messages %>
+    <% if flash[:notice] || flash[:alert] %>
+      <div class="toast toast-top toast-end z-50">
+        <% if flash[:notice] %>
+          <div class="alert alert-success">
+            <span><%= flash[:notice] %></span>
+          </div>
+        <% end %>
+        <% if flash[:alert] %>
+          <div class="alert alert-error">
+            <span><%= flash[:alert] %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </body>
+</html>

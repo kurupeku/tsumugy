@@ -1,0 +1,120 @@
+<% content_for(:title) { "チームワーク | NASAゲーム" } %>
+
+<div class="min-h-screen flex flex-col pb-4">
+  <%# Header %>
+  <div class="navbar bg-base-100 shadow-lg sticky top-0 z-20">
+    <div class="flex-1">
+      <span class="text-xl">🚀</span>
+      <span class="font-bold ml-2"><%= @group.name %></span>
+    </div>
+    <div class="flex-none gap-2">
+      <% if @group.completed? %>
+        <div class="badge badge-success">完了済み</div>
+      <% else %>
+        <div class="badge badge-secondary gap-1">
+          <span class="w-2 h-2 bg-secondary-content rounded-full animate-pulse"></span>
+          <%= @group.participants.count %>人参加中
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Instructions %>
+  <div class="bg-warning/10 border-b border-warning/30 p-3 text-center">
+    <p class="text-sm text-warning-content">
+      グループで話し合いながら、<strong>合意</strong>の上でランキングを決めてください
+    </p>
+  </div>
+
+  <%# Team Ranking List %>
+  <div class="flex-1 p-4 max-w-lg mx-auto w-full">
+    <% if @group.completed? %>
+      <%# Read-only view after completion %>
+      <div class="alert alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>チームワークは完了しています。結果発表をお待ちください。</span>
+      </div>
+    <% end %>
+
+    <div
+      id="team-ranking-list"
+      class="space-y-2"
+      data-controller="<%= @group.completed? ? '' : 'sortable' %>"
+      data-sortable-url-value="<%= nasa_game_group_group_rankings_path(@group) %>"
+    >
+      <% @group_rankings.each_with_index do |ranking, index| %>
+        <div
+          class="card bg-base-100 shadow <%= @group.completed? ? '' : 'cursor-grab active:cursor-grabbing' %> transition-all"
+          data-sortable-item
+          data-item-id="<%= ranking.item_id %>"
+        >
+          <div class="card-body p-3 flex-row items-center gap-3">
+            <%# Rank Number %>
+            <div class="badge badge-secondary badge-lg font-bold min-w-10" data-rank>
+              <%= index + 1 %>
+            </div>
+
+            <%# Item Info %>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-sm leading-tight">
+                <%= NasaGame::Item.find(ranking.item_id).name_ja %>
+              </p>
+            </div>
+
+            <% unless @group.completed? %>
+              <%# Drag Handle %>
+              <div class="text-base-content/30">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Participant Individual Rankings (Collapsible) %>
+  <div class="px-4 pb-4 max-w-lg mx-auto w-full">
+    <div class="collapse collapse-arrow bg-base-100 shadow">
+      <input type="checkbox" />
+      <div class="collapse-title font-medium text-sm">
+        メンバーの個人ランキングを参照
+      </div>
+      <div class="collapse-content">
+        <div class="overflow-x-auto">
+          <table class="table table-xs">
+            <thead>
+              <tr>
+                <th class="w-8">アイテム</th>
+                <% @group.participants.each do |p| %>
+                  <th class="text-center min-w-12">
+                    <span class="badge badge-ghost badge-sm <%= p == @participant ? 'badge-primary' : '' %>">
+                      <%= p.display_name.truncate(4) %>
+                    </span>
+                  </th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% NasaGame::Item.all.each do |item| %>
+                <tr>
+                  <td class="text-xs text-base-content/60 max-w-24 truncate" title="<%= item.name_ja %>">
+                    <%= item.name_ja.truncate(10) %>
+                  </td>
+                  <% @group.participants.each do |p| %>
+                    <% rank = p.individual_rankings.find { |r| r.item_id == item.id }&.rank %>
+                    <td class="text-center">
+                      <span class="font-bold text-sm"><%= rank || "-" %></span>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

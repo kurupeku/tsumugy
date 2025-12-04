@@ -11,10 +11,34 @@ RSpec.describe NasaGame::Participant, type: :model do
     end
 
     it { is_expected.to validate_presence_of(:display_name) }
-    it { is_expected.to validate_uniqueness_of(:session_token) }
+
+    describe "user_id uniqueness scoped to session_id" do
+      let(:user) { create(:user) }
+      let(:session) { create(:nasa_game_session) }
+      let(:group) { create(:nasa_game_group, session:) }
+
+      before do
+        create(:nasa_game_participant, user:, session:, group:)
+      end
+
+      it "does not allow same user to join same session twice" do
+        another_group = create(:nasa_game_group, session:)
+        duplicate = build(:nasa_game_participant, user:, session:, group: another_group)
+        expect(duplicate).not_to be_valid
+        expect(duplicate.errors[:user_id]).to include("このセッションには既に参加しています")
+      end
+
+      it "allows same user to join different sessions" do
+        another_session = create(:nasa_game_session)
+        another_group = create(:nasa_game_group, session: another_session)
+        new_participant = build(:nasa_game_participant, user:, session: another_session, group: another_group)
+        expect(new_participant).to be_valid
+      end
+    end
   end
 
   describe "associations" do
+    it { is_expected.to belong_to(:user).class_name("User") }
     it { is_expected.to belong_to(:session).class_name("NasaGame::Session") }
     it { is_expected.to belong_to(:group).class_name("NasaGame::Group") }
     it { is_expected.to have_many(:individual_rankings).class_name("NasaGame::IndividualRanking").dependent(:destroy) }
@@ -25,21 +49,6 @@ RSpec.describe NasaGame::Participant, type: :model do
       participant = create(:nasa_game_participant)
       expect(participant.id).to be_present
       expect(participant.id).to match(/\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i)
-    end
-  end
-
-  describe "session_token" do
-    it "generates a unique session_token before validation if not present" do
-      participant = build(:nasa_game_participant, session_token: nil)
-      participant.valid?
-      expect(participant.session_token).to be_present
-    end
-
-    it "does not overwrite existing session_token" do
-      existing_token = SecureRandom.urlsafe_base64(32)
-      participant = build(:nasa_game_participant, session_token: existing_token)
-      participant.valid?
-      expect(participant.session_token).to eq(existing_token)
     end
   end
 

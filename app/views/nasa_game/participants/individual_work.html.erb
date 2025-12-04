@@ -1,0 +1,106 @@
+<% content_for(:title) { "個人ワーク | NASAゲーム" } %>
+
+<div class="min-h-screen flex flex-col pb-24">
+  <%# Header %>
+  <div class="navbar bg-base-100 shadow-lg sticky top-0 z-20">
+    <div class="flex-1">
+      <span class="text-xl">🚀</span>
+      <span class="font-bold ml-2">個人ワーク</span>
+    </div>
+    <div class="flex-none">
+      <% if @participant.individual_completed? %>
+        <div class="badge badge-success">完了済み</div>
+      <% else %>
+        <div class="badge badge-warning">作業中</div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Instructions %>
+  <div class="bg-base-100 border-b border-base-300 p-3 text-center">
+    <p class="text-sm text-base-content/80">
+      アイテムを<strong class="text-primary">重要な順</strong>に並べ替えてください
+    </p>
+  </div>
+
+  <%# Ranking List %>
+  <div class="flex-1 p-4 max-w-lg mx-auto w-full">
+    <% if @participant.individual_completed? %>
+      <%# Read-only view after completion %>
+      <div class="alert alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>個人ワークは完了しています。チームワークの開始をお待ちください。</span>
+      </div>
+      <div class="space-y-2">
+        <% @rankings.each_with_index do |ranking, index| %>
+          <div class="card bg-base-100 shadow">
+            <div class="card-body p-3 flex-row items-center gap-3">
+              <div class="badge badge-primary badge-lg font-bold min-w-10">
+                <%= index + 1 %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm leading-tight truncate">
+                  <%= NasaGame::Item.find(ranking.item_id).name_ja %>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%# Editable sortable list %>
+      <div
+        id="ranking-list"
+        class="space-y-2"
+        data-controller="sortable"
+        data-sortable-url-value="<%= nasa_game_participant_individual_rankings_path(@participant) %>"
+      >
+        <% @rankings.each_with_index do |ranking, index| %>
+          <div
+            class="card bg-base-100 shadow cursor-grab active:cursor-grabbing"
+            data-sortable-item
+            data-item-id="<%= ranking.item_id %>"
+          >
+            <div class="card-body p-3 flex-row items-center gap-3">
+              <%# Rank Number %>
+              <div class="badge badge-primary badge-lg font-bold min-w-10" data-rank>
+                <%= index + 1 %>
+              </div>
+
+              <%# Item Info %>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm leading-tight truncate">
+                  <%= NasaGame::Item.find(ranking.item_id).name_ja %>
+                </p>
+              </div>
+
+              <%# Drag Handle %>
+              <div class="text-base-content/30">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Fixed Bottom Action %>
+  <% unless @participant.individual_completed? %>
+    <div class="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 p-4 z-10">
+      <div class="max-w-lg mx-auto">
+        <%= button_to nasa_game_participant_path(@participant),
+            method: :patch,
+            class: "btn btn-primary btn-lg w-full",
+            data: { turbo_confirm: "この順位で確定しますか？確定後は変更できません。" } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          この順位で確定する
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

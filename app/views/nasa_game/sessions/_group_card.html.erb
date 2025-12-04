@@ -1,0 +1,65 @@
+<%# locals: (group:, session:) %>
+<div class="card bg-base-200 shadow">
+  <div class="card-body p-4">
+    <%# Group Header %>
+    <div class="flex items-center justify-between">
+      <h3 class="card-title text-lg"><%= group.name %></h3>
+      <div class="badge badge-outline">
+        <%= group.participants.count %>人
+      </div>
+    </div>
+
+    <%# Participants %>
+    <div class="flex flex-wrap gap-1 my-2 min-h-8">
+      <% group.participants.each do |participant| %>
+        <div class="badge badge-sm <%= participant.individual_completed? ? 'badge-success' : 'badge-ghost' %>">
+          <%= participant.display_name %>
+        </div>
+      <% end %>
+      <% if group.participants.empty? %>
+        <span class="text-base-content/50 text-sm">参加者なし</span>
+      <% end %>
+    </div>
+
+    <%# Progress %>
+    <% if session.individual? || session.team? %>
+      <div class="w-full">
+        <% if session.individual? %>
+          <% completed = group.participants.count { |p| p.individual_completed? } %>
+          <% total = group.participants.count %>
+        <% else %>
+          <% completed = group.completed? ? 1 : 0 %>
+          <% total = 1 %>
+        <% end %>
+        <progress
+          class="progress progress-primary w-full"
+          value="<%= completed %>"
+          max="<%= [total, 1].max %>">
+        </progress>
+        <div class="text-xs text-base-content/60 mt-1">
+          <%= completed %>/<%= total %> 完了
+        </div>
+      </div>
+    <% end %>
+
+    <%# Invite URL %>
+    <div class="card-actions mt-2">
+      <div class="join w-full">
+        <input
+          type="text"
+          value="<%= new_nasa_game_group_participant_url(group) %>"
+          class="input input-bordered input-sm join-item flex-1 font-mono text-xs"
+          readonly
+          id="invite-url-<%= group.id %>"
+        />
+        <button
+          class="btn btn-sm btn-primary join-item"
+          data-controller="clipboard"
+          data-clipboard-text-value="<%= new_nasa_game_group_participant_url(group) %>"
+        >
+          コピー
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

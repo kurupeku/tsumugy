@@ -1,0 +1,69 @@
+<% content_for(:title) { "ロビー | NASAゲーム" } %>
+
+<div class="min-h-screen flex flex-col">
+  <%# Header %>
+  <div class="navbar bg-base-100 shadow-lg sticky top-0 z-10">
+    <div class="flex-1">
+      <span class="text-xl">🚀</span>
+      <span class="font-bold ml-2"><%= @group.name %></span>
+    </div>
+    <div class="flex-none">
+      <div class="badge badge-primary"><%= @participant.display_name %></div>
+    </div>
+  </div>
+
+  <%# Main Content %>
+  <div class="flex-1 flex flex-col items-center justify-center p-4">
+    <div class="card bg-base-100 shadow-xl w-full max-w-md">
+      <div class="card-body items-center text-center">
+        <%# Waiting Animation %>
+        <div class="relative">
+          <div class="text-7xl animate-bounce">🌙</div>
+          <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+            <span class="loading loading-dots loading-lg text-primary"></span>
+          </div>
+        </div>
+
+        <h2 class="card-title text-2xl mt-6">待機中...</h2>
+        <p class="text-base-content/70">
+          ファシリテーターがゲームを開始するまでお待ちください
+        </p>
+
+        <%# Participants List %>
+        <div class="divider">参加者</div>
+        <div class="flex flex-wrap gap-2 justify-center max-w-full">
+          <% @group.participants.each do |participant| %>
+            <div class="badge badge-lg <%= participant == @participant ? 'badge-primary' : 'badge-outline' %> gap-2">
+              <% if participant == @participant %>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+              <% end %>
+              <%= participant.display_name %>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Mission Brief %>
+        <div class="collapse collapse-arrow bg-base-200 mt-6 w-full">
+          <input type="checkbox" />
+          <div class="collapse-title font-medium">
+            ミッション概要を見る
+          </div>
+          <div class="collapse-content text-left text-sm">
+            <p class="mb-2">
+              あなたは宇宙飛行士です。月面の明るい側に不時着し、
+              母船とは約320km離れた場所にいます。
+            </p>
+            <p class="mb-2">
+              宇宙船は大破し、乗組員の生存に関わる15個のアイテムだけが
+              無傷で残っています。
+            </p>
+            <p class="font-bold text-primary">
+              母船にたどり着くために、これらのアイテムに
+              重要度の順位をつけてください。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
