@@ -303,6 +303,9 @@ Action Cable を使用予定。
 - [x] NasaGame::Session に expires_at 追加（24 時間有効期限）
 - [x] Landing Controller（役割ベースの自動リダイレクト）
 - [x] 期限切れセッションの自動クリーンアップ（Landing アクセス時）
+- [x] ホームページからNASAゲームへの導線（ゲームカード・ボタン）
+- [x] 不正アクセス時のエラーハンドリング（RecordNotFound、期限切れセッション）
+- [x] LandingController のシステムテスト（12ケース）
 
 ### 未着手
 

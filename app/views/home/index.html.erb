@@ -5,7 +5,7 @@
       <div class="max-w-md">
         <h1 class="text-5xl font-bold">Tsumugy</h1>
         <p class="py-6">チームビルディングゲームで、楽しくチームの絆を深めよう！</p>
-        <button class="btn btn-primary">ゲームを始める</button>
+        <%= link_to "ゲームを始める", nasa_game_root_path, class: "btn btn-primary" %>
       </div>
     </div>
   </div>
@@ -14,21 +14,21 @@
   <div class="container mx-auto px-4 py-16">
     <h2 class="text-3xl font-bold text-center mb-12">ゲーム一覧</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Card 1 -->
-      <div class="card bg-base-100 shadow-xl">
+      <!-- NASA Game Card -->
+      <%= link_to nasa_game_root_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
         <figure class="px-10 pt-10">
           <div class="bg-primary/20 rounded-xl w-full h-32 flex items-center justify-center">
-            <span class="text-6xl">🎯</span>
+            <span class="text-6xl">🌙</span>
           </div>
         </figure>
         <div class="card-body items-center text-center">
-          <h2 class="card-title">Coming Soon</h2>
-          <p>新しいゲームを準備中です</p>
+          <h2 class="card-title">NASAゲーム</h2>
+          <p>月面からの脱出 - チームで協力してアイテムの優先順位を決めよう</p>
           <div class="card-actions">
-            <button class="btn btn-primary btn-disabled">近日公開</button>
+            <span class="btn btn-primary">プレイする</span>
           </div>
         </div>
-      </div>
+      <% end %>
 
       <!-- Card 2 -->
       <div class="card bg-base-100 shadow-xl">

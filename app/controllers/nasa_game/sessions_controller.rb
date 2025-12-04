@@ -5,6 +5,7 @@ module NasaGame
     include UserAuthentication
 
     before_action :set_session, only: %i[show update]
+    before_action :ensure_session_not_expired, only: %i[show update]
 
     def new
       @session = Session.new
@@ -62,6 +63,12 @@ module NasaGame
 
     def set_session
       @session = Session.find(params[:id])
+    end
+
+    def ensure_session_not_expired
+      return unless @session.expired?
+
+      redirect_to nasa_game_root_path, alert: "セッションの有効期限が切れています"
     end
 
     def session_params

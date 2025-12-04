@@ -7,7 +7,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
   let!(:group) { create(:nasa_game_group, session: session, name: "テストグループ", position: 0) }
 
   describe "グループ参加" do
-    it "表示名を入力してグループに参加できる" do
+    it "表示名を入力してグループに参加できる", :aggregate_failures do
       visit new_nasa_game_group_participant_path(group)
 
       expect(page).to have_content "NASAゲーム"
@@ -32,11 +32,8 @@ RSpec.describe "NasaGame::Participants", type: :system do
   end
 
   describe "ロビー画面" do
-    it "参加者一覧とミッション概要が表示される" do
-      # Join via form to set cookie properly
-      visit new_nasa_game_group_participant_path(group)
-      fill_in "nasa_game_participant_display_name", with: "テスト太郎"
-      click_button "参加する"
+    it "参加者一覧とミッション概要が表示される", :aggregate_failures do
+      join_group_as("テスト太郎")
 
       expect(page).to have_content "テストグループ"
       expect(page).to have_content "待機中"
@@ -98,18 +95,8 @@ RSpec.describe "NasaGame::Participants", type: :system do
   end
 
   describe "チームワーク画面" do
-    it "チームランキングとメンバー参照が表示される" do
-      # Join and complete individual phase
-      participant_path = join_group_as("テスト太郎")
-      session.reload.update!(phase: :individual)
-      visit participant_path
-
-      # Complete individual work
-      accept_confirm do
-        click_button "この順位で確定する"
-      end
-
-      # Change to team phase
+    it "チームランキングとメンバー参照が表示される", :aggregate_failures do
+      participant_path = complete_individual_work_as("テスト太郎")
       session.reload.update!(phase: :team)
       visit participant_path
 
@@ -130,16 +117,8 @@ RSpec.describe "NasaGame::Participants", type: :system do
       end
     end
 
-    it "スコアと結果が表示される" do
-      # Complete the flow: lobby -> individual -> team -> result
-      participant_path = join_group_as("テスト太郎")
-      session.reload.update!(phase: :individual)
-      visit participant_path
-
-      accept_confirm do
-        click_button "この順位で確定する"
-      end
-
+    it "スコアと結果が表示される", :aggregate_failures do
+      participant_path = complete_individual_work_as("テスト太郎")
       session.reload.update!(phase: :result)
       visit participant_path
 
@@ -150,15 +129,8 @@ RSpec.describe "NasaGame::Participants", type: :system do
       expect(page).to have_content "NASAの解説"
     end
 
-    it "詳細比較テーブルが表示される" do
-      participant_path = join_group_as("テスト太郎")
-      session.reload.update!(phase: :individual)
-      visit participant_path
-
-      accept_confirm do
-        click_button "この順位で確定する"
-      end
-
+    it "詳細比較テーブルが表示される", :aggregate_failures do
+      participant_path = complete_individual_work_as("テスト太郎")
       session.reload.update!(phase: :result)
       visit participant_path
 
@@ -169,14 +141,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
     end
 
     it "トップに戻るボタンがある" do
-      participant_path = join_group_as("テスト太郎")
-      session.reload.update!(phase: :individual)
-      visit participant_path
-
-      accept_confirm do
-        click_button "この順位で確定する"
-      end
-
+      participant_path = complete_individual_work_as("テスト太郎")
       session.reload.update!(phase: :result)
       visit participant_path
 
@@ -192,6 +157,16 @@ RSpec.describe "NasaGame::Participants", type: :system do
     visit new_nasa_game_group_participant_path(group)
     fill_in "nasa_game_participant_display_name", with: display_name
     click_button "参加する"
-    current_path # Return the redirected path
+    current_path
+  end
+
+  # Helper to complete individual work phase
+  # Returns the participant show path after completing
+  def complete_individual_work_as(display_name)
+    participant_path = join_group_as(display_name)
+    session.reload.update!(phase: :individual)
+    visit participant_path
+    accept_confirm { click_button "この順位で確定する" }
+    participant_path
   end
 end

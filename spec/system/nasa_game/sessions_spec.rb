@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "NasaGame::Sessions", type: :system do
   describe "セッション作成" do
-    it "グループ数を指定してセッションを作成できる" do
+    it "グループ数を指定してセッションを作成できる", :aggregate_failures do
       visit new_nasa_game_session_path
 
       expect(page).to have_content "NASAゲーム"
@@ -35,7 +35,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
       end
     end
 
-    it "セッション情報とグループ一覧を表示する" do
+    it "セッション情報とグループ一覧を表示する", :aggregate_failures do
       visit nasa_game_session_path(session)
 
       expect(page).to have_content "フェーズ管理"
@@ -57,7 +57,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
       end
     end
 
-    context "フェーズ進行" do
+    context "when progressing through phases" do
       it "ロビーから個人ワークへ進行できる" do
         visit nasa_game_session_path(session)
 
