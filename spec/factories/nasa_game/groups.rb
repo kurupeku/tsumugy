@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :nasa_game_group, class: "NasaGame::Group" do
-    association :session, factory: :nasa_game_session
+    session factory: %i[nasa_game_session]
     sequence(:name) { |n| "Group #{('A'.ord + n - 1).chr}" }
     sequence(:position) { |n| n - 1 }
   end
