@@ -31,6 +31,57 @@ docker compose exec app bin/rails db:migrate # マイグレーション実行
 - DaisyUI コンポーネントを積極的に活用する
 - Stimulus でインタラクティブな機能を実装
 
+## ユーザー認証アーキテクチャ
+
+### 概要
+
+本アプリケーションは揮発性の高い匿名ユーザーモデルを採用している。ログイン不要で Cookie ベースのセッション管理を行う。
+
+### User モデル
+
+- **1:1 関係（アプリ全体）**: 1 つのブラウザセッションに対して 1 つの User レコード
+- **1:N 関係（ゲーム）**: 1 User は複数のゲーム参加者（例: `NasaGame::Participant`）を持つ
+
+```ruby
+# User モデル
+class User < ApplicationRecord
+  SESSION_DURATION = 1.day
+
+  has_many :nasa_game_participants, dependent: :destroy
+  # 将来追加されるゲームの参加者も同様に関連付け
+end
+```
+
+### 揮発性セッション管理
+
+- `session_token`: Cookie に保存される一意のトークン
+- `expires_at`: セッション有効期限（デフォルト 1 日）
+- アクセスごとに `extend_expiration!` で有効期限を延長
+- 有効期限切れの User は定期バッチで削除（将来実装）
+
+### UserAuthentication Concern
+
+```ruby
+# app/controllers/concerns/user_authentication.rb
+module UserAuthentication
+  COOKIE_KEY = :tsumugy_session_token
+
+  def current_user
+    # Cookie から User を取得、なければ新規作成
+  end
+end
+```
+
+- アプリ全体で共通利用
+- ゲーム固有の認証（例: `ParticipantAuthentication`）はこれを include して拡張
+
+### 新規ゲーム追加時のパターン
+
+1. 参加者モデルに `belongs_to :user` を追加
+2. User モデルに `has_many :new_game_participants` を追加
+3. ゲーム固有の認証 Concern で `UserAuthentication` を include
+4. `current_user` を使って参加者を取得
+
 ## モデル実装方針
 
 ### 名前空間とテーブル名
