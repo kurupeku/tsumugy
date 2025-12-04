@@ -86,7 +86,8 @@ FROM base
 
 # Set production environment
 ENV RAILS_ENV="production" \
-    BUNDLE_PATH="/usr/local/bundle"
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development:test"
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
