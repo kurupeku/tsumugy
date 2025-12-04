@@ -66,8 +66,10 @@ NASA「月面からの脱出」ゲームの MVP 実装設計。チームビル�
 ```
 User (アプリ共通)
   |-- session_token (Cookie 識別用, unique)
+  |-- expires_at (有効期限)
   |-- timestamps
   |
+  +-- NasaGame::Facilitator (セッション作成者)
   +-- NasaGame::Participant (各ゲームへの参加)
 
 NasaGame::Item (ActiveHash)
@@ -76,6 +78,10 @@ NasaGame::Item (ActiveHash)
 
 NasaGame::Session
   |-- phase (enum)
+  |-- expires_at (有効期限、デフォルト24時間)
+  |
+  +-- NasaGame::Facilitator (セッション作成者)
+  |     |-- user_id (FK -> users)
   |
   +-- NasaGame::Group (複数)
   |     |-- name, position
@@ -105,13 +111,23 @@ NasaGame::Session
 
 - id: uuid (PK)
 - session_token: string (unique, not null)
+- expires_at: datetime (default: now + 1 day)
 - timestamps
 
 ### nasa_game_sessions
 
 - id: uuid (PK)
 - phase: integer (enum, default: 0)
+- expires_at: datetime (default: now + 1 day)
 - timestamps
+
+### nasa_game_facilitators
+
+- id: uuid (PK)
+- user_id: uuid (FK -> users)
+- session_id: uuid (FK -> nasa_game_sessions)
+- timestamps
+- unique index: [user_id, session_id]
 
 ### nasa_game_groups
 
@@ -283,11 +299,14 @@ Action Cable を使用予定。
 - [x] User モデル導入（アプリ共通 Cookie 管理 + expires_at による有効期限管理）
 - [x] NasaGame::Participant を User に紐づけるリファクタリング
 - [x] System テスト修正（User ベースの認証フロー）
+- [x] NasaGame::Facilitator モデル導入（セッション作成者の追跡）
+- [x] NasaGame::Session に expires_at 追加（24 時間有効期限）
+- [x] Landing Controller（役割ベースの自動リダイレクト）
+- [x] 期限切れセッションの自動クリーンアップ（Landing アクセス時）
 
 ### 未着手
 
 - [ ] リアルタイム同期 (Action Cable)
-- [ ] ファシリテーターからのフェーズ制御
 - [ ] 期限切れユーザーのクリーンアップバッチ（MVP 後対応）
 
 ## 15 アイテム正解データ
