@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CONTAINER_PATH=$(echo \"$CLAUDE_FILE_PATH\" | sed \"s|$CLAUDE_PROJECT_DIR|/rails|\"); docker compose exec -T app bundle exec rubocop -A --force-exclusion \"$CONTAINER_PATH\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
