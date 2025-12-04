@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_04_165550) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_171126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "nasa_game_facilitators", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "session_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_nasa_game_facilitators_on_session_id"
+    t.index ["user_id", "session_id"], name: "index_nasa_game_facilitators_on_user_id_and_session_id", unique: true
+    t.index ["user_id"], name: "index_nasa_game_facilitators_on_user_id"
+  end
 
   create_table "nasa_game_group_rankings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "group_id", null: false
@@ -62,6 +72,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_165550) do
     t.integer "phase", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "expires_at", default: -> { "(now() + 'P1D'::interval)" }, null: false
+    t.index ["expires_at"], name: "index_nasa_game_sessions_on_expires_at"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -73,6 +85,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_04_165550) do
     t.index ["session_token"], name: "index_users_on_session_token", unique: true
   end
 
+  add_foreign_key "nasa_game_facilitators", "nasa_game_sessions", column: "session_id"
+  add_foreign_key "nasa_game_facilitators", "users"
   add_foreign_key "nasa_game_group_rankings", "nasa_game_groups", column: "group_id"
   add_foreign_key "nasa_game_groups", "nasa_game_sessions", column: "session_id"
   add_foreign_key "nasa_game_individual_rankings", "nasa_game_participants", column: "participant_id"

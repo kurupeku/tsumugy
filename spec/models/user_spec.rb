@@ -16,6 +16,7 @@ RSpec.describe User, type: :model do
 
   describe "associations" do
     it { is_expected.to have_many(:nasa_game_participants).class_name("NasaGame::Participant").dependent(:destroy) }
+    it { is_expected.to have_many(:nasa_game_facilitators).class_name("NasaGame::Facilitator").dependent(:destroy) }
   end
 
   describe "UUID primary key" do

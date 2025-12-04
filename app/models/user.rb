@@ -10,6 +10,12 @@ class User < ApplicationRecord
            dependent: :destroy,
            inverse_of: :user
 
+  has_many :nasa_game_facilitators,
+           class_name: "NasaGame::Facilitator",
+           foreign_key: :user_id,
+           dependent: :destroy,
+           inverse_of: :user
+
   validates :session_token, presence: true, uniqueness: true
 
   before_validation :generate_session_token, on: :create
