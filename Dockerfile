@@ -19,10 +19,16 @@ RUN apt-get update -qq && \
 FROM base AS dev
 
 # Install packages needed to build gems and for development
+# Includes Playwright dependencies for System Specs
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential git libpq-dev libyaml-dev pkg-config \
-      nodejs npm && \
+      nodejs npm \
+      # Playwright dependencies
+      libdbus-1-3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 \
+      libxkbcommon0 libatspi2.0-0t64 libxcomposite1 libxdamage1 \
+      libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 \
+      libcairo2 libnss3 libnspr4 libx11-xcb1 && \
     npm install -g pnpm && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -36,6 +42,9 @@ RUN bundle install
 # Install JS packages
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
+
+# Install Playwright browsers for System Specs
+RUN pnpm dlx playwright install chromium
 
 COPY . .
 
