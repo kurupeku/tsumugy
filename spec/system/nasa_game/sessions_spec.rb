@@ -25,6 +25,20 @@ RSpec.describe "NasaGame::Sessions", type: :system do
 
       expect(page).to have_field("group_count", with: "4")
     end
+
+    it "ゲーム選択画面へ戻るリンクが表示される" do
+      visit new_nasa_game_session_path
+
+      expect(page).to have_link "ゲーム選択に戻る", href: root_path
+    end
+
+    it "ゲーム選択に戻るリンクからトップページに遷移できる" do
+      visit new_nasa_game_session_path
+
+      click_link "ゲーム選択に戻る"
+
+      expect(page).to have_current_path(root_path)
+    end
   end
 
   describe "ダッシュボード" do
@@ -120,6 +134,9 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         session_id = current_path.split("/").last
         created_session = NasaGame::Session.find(session_id)
 
+        # Dismiss toast before clicking navbar button
+        dismiss_toasts
+
         # Click the end session button in navbar and accept confirm dialog
         accept_confirm("セッションを終了しますか？") do
           within(".navbar") { click_button "セッションを終了" }
@@ -177,6 +194,9 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         # Groups are created through UI, get them after page load
         group_ids = created_session.groups.pluck(:id)
         expect(group_ids.size).to eq(2)
+
+        # Dismiss toast before clicking navbar button
+        dismiss_toasts
 
         accept_confirm do
           within(".navbar") { click_button "セッションを終了" }
