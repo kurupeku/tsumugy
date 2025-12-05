@@ -9,7 +9,12 @@
         <span class="text-xl font-bold">NASAゲーム</span>
       </div>
       <div class="flex-none">
-        <%= link_to "新規セッション", new_nasa_game_session_path, class: "btn btn-ghost btn-sm" %>
+        <%= button_to nasa_game_session_path(@session),
+            method: :delete,
+            class: "btn btn-ghost btn-sm text-error",
+            data: { turbo_confirm: "セッションを終了しますか？\nすべてのデータが削除されます。" } do %>
+          セッションを終了
+        <% end %>
       </div>
     </div>
 
@@ -69,9 +74,17 @@
               結果を発表
             <% end %>
           <% when "result" %>
-            <div class="badge badge-success badge-lg gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-              完了
+            <div class="flex flex-col items-center gap-4">
+              <div class="badge badge-success badge-lg gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                完了
+              </div>
+              <%= button_to nasa_game_session_path(@session),
+                  method: :delete,
+                  class: "btn btn-error btn-lg",
+                  data: { turbo_confirm: "セッションを終了しますか？\nすべてのデータが削除されます。" } do %>
+                セッションを終了
+              <% end %>
             </div>
           <% end %>
         </div>

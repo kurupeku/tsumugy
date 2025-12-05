@@ -103,5 +103,91 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         expect(page).to have_content "完了"
       end
     end
+
+    context "when terminating session" do
+      # Facilitator is created when visiting the dashboard via browser
+      # which triggers current_user creation and facilitator association
+      # For these tests, we need to create the session through the UI first
+
+      it "ヘッダーの終了ボタンでセッションを終了できる" do
+        # Create session through UI to establish facilitator relationship
+        visit new_nasa_game_session_path
+        fill_in "group_count", with: 2
+        click_button "セッションを作成"
+
+        # Wait for redirect and get session from current URL
+        expect(page).to have_content "セッションを作成しました"
+        session_id = current_path.split("/").last
+        created_session = NasaGame::Session.find(session_id)
+
+        # Click the end session button in navbar and accept confirm dialog
+        accept_confirm("セッションを終了しますか？") do
+          within(".navbar") { click_button "セッションを終了" }
+        end
+
+        expect(page).to have_current_path(root_path)
+        expect(NasaGame::Session.exists?(created_session.id)).to be false
+      end
+
+      it "結果発表フェーズでは目立つ終了ボタンが表示される" do
+        # Create session through UI
+        visit new_nasa_game_session_path
+        fill_in "group_count", with: 2
+        click_button "セッションを作成"
+        expect(page).to have_content "セッションを作成しました"
+
+        # Progress through phases via UI to reach result phase
+        # Lobby -> Individual
+        accept_confirm { click_button "個人ワークを開始" }
+        expect(page).to have_content "フェーズを更新しました"
+
+        # Individual -> Team
+        accept_confirm { click_button "チームワークを開始" }
+        expect(page).to have_content "フェーズを更新しました"
+
+        # Team -> Result
+        accept_confirm { click_button "結果を発表" }
+        expect(page).to have_content "フェーズを更新しました"
+
+        # Result phase has a prominent end button (btn-error btn-lg)
+        expect(page).to have_css(".btn-error.btn-lg", text: "セッションを終了")
+
+        session_id = current_path.split("/").last
+        created_session = NasaGame::Session.find(session_id)
+
+        accept_confirm do
+          find(".btn-error.btn-lg", text: "セッションを終了").click
+        end
+
+        expect(page).to have_current_path(root_path)
+        expect(NasaGame::Session.exists?(created_session.id)).to be false
+      end
+
+      it "セッション終了時に関連データも削除される" do
+        # Create session through UI
+        visit new_nasa_game_session_path
+        fill_in "group_count", with: 2
+        click_button "セッションを作成"
+        expect(page).to have_content "セッションを作成しました"
+
+        # Get session info from URL path
+        session_id = current_path.split("/").last
+        created_session = NasaGame::Session.find(session_id)
+
+        # Groups are created through UI, get them after page load
+        group_ids = created_session.groups.pluck(:id)
+        expect(group_ids.size).to eq(2)
+
+        accept_confirm do
+          within(".navbar") { click_button "セッションを終了" }
+        end
+
+        expect(page).to have_current_path(root_path)
+        expect(NasaGame::Session.exists?(created_session.id)).to be false
+        group_ids.each do |group_id|
+          expect(NasaGame::Group.exists?(group_id)).to be false
+        end
+      end
+    end
   end
 end

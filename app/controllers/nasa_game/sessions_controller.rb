@@ -4,8 +4,9 @@ module NasaGame
   class SessionsController < BaseController
     include UserAuthentication
 
-    before_action :set_session, only: %i[show update]
+    before_action :set_session, only: %i[show update destroy]
     before_action :ensure_session_not_expired, only: %i[show update]
+    before_action :ensure_facilitator, only: %i[destroy]
 
     def new
       @session = Session.new
@@ -59,6 +60,11 @@ module NasaGame
       redirect_to nasa_game_session_path(@session), notice: "フェーズを更新しました"
     end
 
+    def destroy
+      @session.destroy!
+      redirect_to root_path, notice: "セッションを終了しました"
+    end
+
     private
 
     def set_session
@@ -69,6 +75,12 @@ module NasaGame
       return unless @session.expired?
 
       redirect_to nasa_game_root_path, alert: "セッションの有効期限が切れています"
+    end
+
+    def ensure_facilitator
+      return if @session.facilitators.exists?(user: current_user)
+
+      redirect_to nasa_game_root_path, alert: "このセッションを終了する権限がありません"
     end
 
     def session_params

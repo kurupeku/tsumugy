@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     root to: "landing#index"
 
     # Facilitator: session management
-    resources :sessions, only: %i[new create show update]
+    resources :sessions, only: %i[new create show update destroy]
 
     # Participant flow - groups/:id is the entry point (shared via invitation link)
     resources :groups, only: %i[show] do
