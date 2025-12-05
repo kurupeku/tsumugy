@@ -57,7 +57,7 @@ module NasaGame
         return
       end
 
-      redirect_to nasa_game_session_path(@session), notice: t(".flash.phase_updated")
+      redirect_to nasa_game_session_path(@session)
     end
 
     def destroy
