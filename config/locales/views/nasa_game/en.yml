@@ -39,6 +39,26 @@ en:
         total_participants: "Total Participants"
         individual_completed: "Individual Work Completed"
         team_completed: "Team Work Completed"
+        guide:
+          lobby:
+            title: "Lobby Phase Guide"
+            step1: "Share each group's URL with participants"
+            step2: "Press 'Start Individual Work' when everyone has joined"
+          individual:
+            title: "Individual Work Phase Guide"
+            step1: "Instruct participants to rank the 15 items in order of importance"
+            step2: "Estimated time: 5-10 minutes"
+            step3: "Press 'Start Team Work' when all or most participants have completed"
+          team:
+            title: "Team Work Phase Guide"
+            step1: "Instruct groups to discuss and agree on a team ranking"
+            step2: "Estimated time: 15-20 minutes"
+            step3: "Press 'Show Results' when all groups have completed"
+          result:
+            title: "Results Phase Guide"
+            step1: "Review the correct answers and each group's results"
+            step2: "Allow time for reflection and discussion"
+            step3: "Press 'End Session' when finished"
       group_card:
         people_count: "%{count} people"
         no_participants: "No participants"
@@ -54,6 +74,13 @@ en:
         not_authorized: "You are not authorized to end this session"
 
     participants:
+      mission_modal:
+        title: "Mission Overview"
+        button_title: "View Mission Overview"
+        paragraph1: "You are astronauts. You have crash-landed on the bright side of the Moon, approximately 320km from your mother ship."
+        paragraph2: "Your spacecraft is wrecked, and only 15 items vital to crew survival remain intact."
+        paragraph3: "Rank these items in order of importance for reaching the mother ship."
+        close: "Close"
       new:
         page_title: "Join Group | NASA Game"
         joining_group: "Joining"

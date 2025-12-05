@@ -39,6 +39,26 @@ ja:
         total_participants: "総参加者数"
         individual_completed: "個人ワーク完了"
         team_completed: "チームワーク完了"
+        guide:
+          lobby:
+            title: "ロビーフェーズの進め方"
+            step1: "各グループのURLを参加者に共有してください"
+            step2: "全員が揃ったら「個人ワークを開始」を押してください"
+          individual:
+            title: "個人ワークフェーズの進め方"
+            step1: "参加者に15個のアイテムを重要度順に並べ替えるよう指示してください"
+            step2: "目安時間: 5〜10分"
+            step3: "全員または大多数が完了したら「チームワークを開始」を押してください"
+          team:
+            title: "チームワークフェーズの進め方"
+            step1: "グループ内で話し合い、合意の上でランキングを決めるよう指示してください"
+            step2: "目安時間: 15〜20分"
+            step3: "全グループが完了したら「結果を発表」を押してください"
+          result:
+            title: "結果発表フェーズの進め方"
+            step1: "正解と各グループの結果を確認してください"
+            step2: "振り返りの時間を設けてください"
+            step3: "終了する場合は「セッションを終了」を押してください"
       group_card:
         people_count: "%{count}人"
         no_participants: "参加者なし"
@@ -54,6 +74,13 @@ ja:
         not_authorized: "このセッションを終了する権限がありません"
 
     participants:
+      mission_modal:
+        title: "ミッション概要"
+        button_title: "ミッション概要を見る"
+        paragraph1: "あなたは宇宙飛行士です。月面の明るい側に不時着し、母船とは約320km離れた場所にいます。"
+        paragraph2: "宇宙船は大破し、乗組員の生存に関わる15個のアイテムだけが無傷で残っています。"
+        paragraph3: "母船にたどり着くために、これらのアイテムに重要度の順位をつけてください。"
+        close: "閉じる"
       new:
         page_title: "グループに参加 | NASAゲーム"
         joining_group: "に参加します"

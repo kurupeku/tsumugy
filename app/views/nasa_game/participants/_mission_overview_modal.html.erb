@@ -1,0 +1,25 @@
+<%# Mission Overview Modal - shared across all participant screens %>
+<dialog id="mission-overview-modal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg flex items-center gap-2">
+      <span class="text-2xl">🚀</span>
+      <%= t("nasa_game.participants.mission_modal.title") %>
+    </h3>
+    <div class="py-4 space-y-4 text-sm">
+      <p><%= t("nasa_game.participants.mission_modal.paragraph1") %></p>
+      <p><%= t("nasa_game.participants.mission_modal.paragraph2") %></p>
+      <p class="font-bold text-primary"><%= t("nasa_game.participants.mission_modal.paragraph3") %></p>
+    </div>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn"><%= t("nasa_game.participants.mission_modal.close") %></button>
+      </form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

@@ -60,6 +60,42 @@
           </li>
         </ul>
 
+        <%# Phase Guidance %>
+        <div class="alert alert-info text-sm my-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div>
+            <% case @session.phase %>
+            <% when "lobby" %>
+              <p class="font-medium"><%= t(".guide.lobby.title") %></p>
+              <ul class="list-disc list-inside mt-1 space-y-0.5">
+                <li><%= t(".guide.lobby.step1") %></li>
+                <li><%= t(".guide.lobby.step2") %></li>
+              </ul>
+            <% when "individual" %>
+              <p class="font-medium"><%= t(".guide.individual.title") %></p>
+              <ul class="list-disc list-inside mt-1 space-y-0.5">
+                <li><%= t(".guide.individual.step1") %></li>
+                <li><%= t(".guide.individual.step2") %></li>
+                <li><%= t(".guide.individual.step3") %></li>
+              </ul>
+            <% when "team" %>
+              <p class="font-medium"><%= t(".guide.team.title") %></p>
+              <ul class="list-disc list-inside mt-1 space-y-0.5">
+                <li><%= t(".guide.team.step1") %></li>
+                <li><%= t(".guide.team.step2") %></li>
+                <li><%= t(".guide.team.step3") %></li>
+              </ul>
+            <% when "result" %>
+              <p class="font-medium"><%= t(".guide.result.title") %></p>
+              <ul class="list-disc list-inside mt-1 space-y-0.5">
+                <li><%= t(".guide.result.step1") %></li>
+                <li><%= t(".guide.result.step2") %></li>
+                <li><%= t(".guide.result.step3") %></li>
+              </ul>
+            <% end %>
+          </div>
+        </div>
+
         <%# Phase Actions %>
         <div class="card-actions justify-center">
           <% case @session.phase %>
