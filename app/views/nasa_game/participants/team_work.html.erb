@@ -4,6 +4,9 @@
      data-controller="nasa-game--session-subscription nasa-game--group-subscription"
      data-nasa-game--session-subscription-session-id-value="<%= @session.id %>"
      data-nasa-game--session-subscription-current-phase-value="<%= @session.phase %>"
+     data-nasa-game--session-subscription-terminated-title-value="<%= t('nasa_game.session_terminated.title') %>"
+     data-nasa-game--session-subscription-terminated-message-value="<%= t('nasa_game.session_terminated.message') %>"
+     data-nasa-game--session-subscription-terminated-confirm-value="<%= t('nasa_game.session_terminated.confirm') %>"
      data-nasa-game--group-subscription-group-id-value="<%= @group.id %>"
      data-nasa-game--group-subscription-participant-id-value="<%= @participant.id %>">
   <%# Header %>

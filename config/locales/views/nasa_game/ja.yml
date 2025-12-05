@@ -130,6 +130,11 @@ ja:
           team_completed: "チームランキングを確定しました"
           already_completed: "既にチームランキングは確定しています"
 
+    session_terminated:
+      title: "セッション終了"
+      message: "ファシリテーターがセッションを終了しました。"
+      confirm: "OK"
+
     errors:
       not_found: "指定されたページが見つかりませんでした"
       authentication_required: "参加登録が必要です"

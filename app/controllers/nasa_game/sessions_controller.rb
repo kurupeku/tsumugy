@@ -61,6 +61,7 @@ module NasaGame
     end
 
     def destroy
+      @session.broadcast_termination
       @session.destroy!
       redirect_to root_path, notice: t(".flash.terminated")
     end
@@ -74,13 +75,13 @@ module NasaGame
     def ensure_session_not_expired
       return unless @session.expired?
 
-      redirect_to nasa_game_root_path, alert: t("nasa_game.sessions.flash.expired")
+      redirect_to root_path, alert: t("nasa_game.sessions.flash.expired")
     end
 
     def ensure_facilitator
       return if @session.facilitators.exists?(user: current_user)
 
-      redirect_to nasa_game_root_path, alert: t("nasa_game.sessions.flash.not_authorized")
+      redirect_to root_path, alert: t("nasa_game.sessions.flash.not_authorized")
     end
 
     def session_params

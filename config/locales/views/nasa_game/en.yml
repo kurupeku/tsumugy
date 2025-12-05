@@ -130,6 +130,11 @@ en:
           team_completed: "Team ranking confirmed"
           already_completed: "Team ranking is already confirmed"
 
+    session_terminated:
+      title: "Session Ended"
+      message: "The facilitator has ended the session."
+      confirm: "OK"
+
     errors:
       not_found: "The specified page was not found"
       authentication_required: "Registration is required"

@@ -43,6 +43,11 @@ module NasaGame
       "nasa_game:session:#{id}"
     end
 
+    # Broadcast session termination to all connected clients
+    def broadcast_termination
+      ActionCable.server.broadcast(stream_name, { type: "session_terminated" })
+    end
+
     private
 
     def set_default_expires_at

@@ -3,7 +3,10 @@
 <div class="min-h-screen flex flex-col"
      data-controller="nasa-game--session-subscription"
      data-nasa-game--session-subscription-session-id-value="<%= @session.id %>"
-     data-nasa-game--session-subscription-current-phase-value="<%= @session.phase %>">
+     data-nasa-game--session-subscription-current-phase-value="<%= @session.phase %>"
+     data-nasa-game--session-subscription-terminated-title-value="<%= t('nasa_game.session_terminated.title') %>"
+     data-nasa-game--session-subscription-terminated-message-value="<%= t('nasa_game.session_terminated.message') %>"
+     data-nasa-game--session-subscription-terminated-confirm-value="<%= t('nasa_game.session_terminated.confirm') %>">
   <%# Header %>
   <div class="navbar bg-base-100 shadow-lg sticky top-0 z-10">
     <div class="flex-1">

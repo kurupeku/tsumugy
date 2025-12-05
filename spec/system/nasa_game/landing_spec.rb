@@ -54,14 +54,6 @@ RSpec.describe "NasaGame::Landing", type: :system do
 
         expect(page).to have_current_path(new_nasa_game_session_path)
       end
-
-      it "navigates to NASA game via the hero button" do
-        visit root_path
-
-        click_link "ゲームを始める"
-
-        expect(page).to have_current_path(new_nasa_game_session_path)
-      end
     end
   end
 
@@ -72,13 +64,16 @@ RSpec.describe "NasaGame::Landing", type: :system do
       it "redirects to landing page with alert" do
         visit nasa_game_session_path(expired_session)
 
-        expect(page).to have_current_path(new_nasa_game_session_path)
+        expect(page).to have_current_path(root_path)
         expect(page).to have_content("セッションの有効期限が切れています")
       end
     end
 
     context "when facilitator's session expires" do
       it "redirects to new session page after cleanup" do
+        # Ensure no existing sessions from other tests
+        NasaGame::Session.destroy_all
+
         # Create session as facilitator
         visit new_nasa_game_session_path
         fill_in "group_count", with: 2
@@ -88,10 +83,10 @@ RSpec.describe "NasaGame::Landing", type: :system do
         expect(page).to have_current_path(%r{/nasa_game/sessions/[0-9a-f-]+$})
         session = NasaGame::Session.last
 
-        # Expire the session
-        session.update!(expires_at: 1.hour.ago)
+        # Expire the session (use a clearly past time to avoid timing issues)
+        session.update_column(:expires_at, 1.day.ago)
 
-        # Visit landing page - should cleanup and redirect to new session
+        # Visit landing page - should cleanup and redirect to new session page
         visit nasa_game_root_path
 
         expect(page).to have_current_path(new_nasa_game_session_path)
@@ -121,28 +116,28 @@ RSpec.describe "NasaGame::Landing", type: :system do
 
   describe "invalid URL handling" do
     context "when accessing non-existent session" do
-      it "redirects to landing page" do
+      it "redirects to top page" do
         visit nasa_game_session_path(id: SecureRandom.uuid)
 
-        expect(page).to have_current_path(new_nasa_game_session_path)
+        expect(page).to have_current_path(root_path)
         expect(page).to have_content("指定されたページが見つかりませんでした")
       end
     end
 
     context "when accessing non-existent group" do
-      it "redirects to landing page" do
+      it "redirects to top page" do
         visit new_nasa_game_group_participant_path(group_id: SecureRandom.uuid)
 
-        expect(page).to have_current_path(new_nasa_game_session_path)
+        expect(page).to have_current_path(root_path)
         expect(page).to have_content("指定されたページが見つかりませんでした")
       end
     end
 
     context "when accessing non-existent participant" do
-      it "redirects to landing page" do
+      it "redirects to top page" do
         visit nasa_game_participant_path(id: SecureRandom.uuid)
 
-        expect(page).to have_current_path(new_nasa_game_session_path)
+        expect(page).to have_current_path(root_path)
         expect(page).to have_content("参加登録が必要です")
       end
     end

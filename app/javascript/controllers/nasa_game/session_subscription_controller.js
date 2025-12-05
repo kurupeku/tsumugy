@@ -6,7 +6,10 @@ export default class extends Controller {
   static values = {
     sessionId: String,
     currentPhase: String,
-    isFacilitator: { type: Boolean, default: false }
+    isFacilitator: { type: Boolean, default: false },
+    terminatedTitle: { type: String, default: "セッション終了" },
+    terminatedMessage: { type: String, default: "ファシリテーターがセッションを終了しました。" },
+    terminatedConfirm: { type: String, default: "OK" }
   }
 
   connect() {
@@ -50,6 +53,9 @@ export default class extends Controller {
       case "team_completed":
         this.handleDashboardUpdate(data)
         break
+      case "session_terminated":
+        this.handleSessionTerminated()
+        break
     }
   }
 
@@ -79,5 +85,33 @@ export default class extends Controller {
         stats.outerHTML = data.stats_html
       }
     }
+  }
+
+  handleSessionTerminated() {
+    // Facilitator is already redirected by their own action
+    if (this.isFacilitatorValue) return
+
+    this.showTerminationDialog()
+  }
+
+  showTerminationDialog() {
+    // Create DaisyUI modal dynamically
+    const dialog = document.createElement("dialog")
+    dialog.className = "modal modal-open"
+    dialog.innerHTML = `
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">${this.terminatedTitleValue}</h3>
+        <p class="py-4">${this.terminatedMessageValue}</p>
+        <div class="modal-action">
+          <button class="btn btn-primary" id="termination-ok-btn">${this.terminatedConfirmValue}</button>
+        </div>
+      </div>
+      <div class="modal-backdrop bg-black/50"></div>
+    `
+    document.body.appendChild(dialog)
+
+    document.getElementById("termination-ok-btn").addEventListener("click", () => {
+      window.location.href = "/"
+    })
   }
 }

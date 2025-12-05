@@ -17,5 +17,7 @@ Capybara.javascript_driver = :playwright
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :playwright
+    # Clear browser cookies before each system test to ensure test isolation
+    Capybara.reset_sessions!
   end
 end
