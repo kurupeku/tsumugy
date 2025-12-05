@@ -104,6 +104,57 @@ RSpec.describe "NasaGame::Participants", type: :system do
       expect(page).to have_content "グループで話し合いながら"
       expect(page).to have_content "メンバーの個人ランキングを参照"
     end
+
+    it "確定ボタンが表示される" do
+      participant_path = complete_individual_work_as("テスト太郎")
+      session.reload.update!(phase: :team)
+      visit participant_path
+
+      expect(page).to have_button "この順位で確定する"
+    end
+
+    it "チームランキングを確定できる" do
+      participant_path = complete_individual_work_as("テスト太郎")
+      session.reload.update!(phase: :team)
+      visit participant_path
+
+      accept_confirm do
+        click_button "この順位で確定する"
+      end
+
+      expect(page).to have_content "チームランキングを確定しました"
+      expect(page).to have_content "完了済み"
+      expect(page).not_to have_button "この順位で確定する"
+    end
+
+    it "確定後はランキング編集不可になる" do
+      participant_path = complete_individual_work_as("テスト太郎")
+      session.reload.update!(phase: :team)
+      visit participant_path
+
+      accept_confirm do
+        click_button "この順位で確定する"
+      end
+
+      expect(page).to have_content "チームワークは完了しています"
+      # Check that sortable is disabled (no drag handle)
+      expect(page).not_to have_css("[data-controller='sortable']")
+    end
+
+    it "既に確定済みの場合は確定ボタンが表示されない" do
+      # First, mark group as already completed
+      participant_path = complete_individual_work_as("テスト太郎")
+      session.reload.update!(phase: :team)
+      group.update!(completed_at: Time.current)
+
+      # Visit team work page as the participant
+      visit participant_path
+
+      # Should show completed state without confirm button
+      expect(page).to have_content "完了済み"
+      expect(page).to have_content "チームワークは完了しています"
+      expect(page).not_to have_button "この順位で確定する"
+    end
   end
 
   describe "結果画面" do

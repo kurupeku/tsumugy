@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     resources :sessions, only: %i[new create show update destroy]
 
     # Participant flow - groups/:id is the entry point (shared via invitation link)
-    resources :groups, only: %i[show] do
+    resources :groups, only: %i[show update] do
       # Participant registration nested under group (join via invitation link)
       resources :participants, only: %i[new create]
       # Group rankings (team consensus)

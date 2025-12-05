@@ -88,6 +88,8 @@ en:
         completed_message: "Team work is complete. Please wait for results."
         reference_title: "Reference: Individual Rankings"
         item_header: "Item"
+        submit: "Confirm this ranking"
+        submit_confirm: "Confirm this ranking? You cannot change it after submission."
       result:
         page_title: "Results | NASA Game"
         header: "Results"
@@ -121,6 +123,12 @@ en:
         individual_completed: "Individual work completed"
         invalid_phase: "Cannot perform this action in the current phase"
         already_completed: "Individual work is already completed"
+
+    groups:
+      update:
+        flash:
+          team_completed: "Team ranking confirmed"
+          already_completed: "Team ranking is already confirmed"
 
     errors:
       not_found: "The specified page was not found"

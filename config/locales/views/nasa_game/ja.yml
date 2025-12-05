@@ -88,6 +88,8 @@ ja:
         completed_message: "チームワークは完了しています。結果発表をお待ちください。"
         reference_title: "メンバーの個人ランキングを参照"
         item_header: "アイテム"
+        submit: "この順位で確定する"
+        submit_confirm: "この順位で確定しますか？確定後は変更できません。"
       result:
         page_title: "結果発表 | NASAゲーム"
         header: "結果発表"
@@ -121,6 +123,12 @@ ja:
         individual_completed: "個人ワークを完了しました"
         invalid_phase: "現在のフェーズでは操作できません"
         already_completed: "既に個人ワークを完了しています"
+
+    groups:
+      update:
+        flash:
+          team_completed: "チームランキングを確定しました"
+          already_completed: "既にチームランキングは確定しています"
 
     errors:
       not_found: "指定されたページが見つかりませんでした"
