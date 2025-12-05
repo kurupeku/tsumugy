@@ -17,11 +17,9 @@
     <div class="card bg-base-100 shadow-xl w-full max-w-md">
       <div class="card-body items-center text-center">
         <%# Waiting Animation %>
-        <div class="relative">
+        <div class="flex flex-col items-center gap-4">
           <div class="text-7xl animate-bounce">🌙</div>
-          <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-            <span class="loading loading-dots loading-lg text-primary"></span>
-          </div>
+          <span class="loading loading-dots loading-lg text-primary"></span>
         </div>
 
         <h2 class="card-title text-2xl mt-6"><%= t(".waiting") %></h2>
