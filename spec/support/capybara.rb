@@ -5,7 +5,9 @@ Capybara.register_driver(:playwright) do |app|
   Capybara::Playwright::Driver.new(
     app,
     browser_type: :chromium,
-    headless: true
+    headless: true,
+    # Set Accept-Language header to Japanese for consistent i18n testing
+    locale: "ja-JP"
   )
 end
 

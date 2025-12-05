@@ -1,0 +1,38 @@
+ja:
+  activerecord:
+    models:
+      nasa_game/session: "セッション"
+      nasa_game/group: "グループ"
+      nasa_game/participant: "参加者"
+      nasa_game/facilitator: "ファシリテーター"
+      nasa_game/individual_ranking: "個人ランキング"
+      nasa_game/team_ranking: "チームランキング"
+    attributes:
+      nasa_game/session:
+        expires_at: "有効期限"
+        phase: "フェーズ"
+      nasa_game/group:
+        name: "名前"
+        position: "順番"
+      nasa_game/participant:
+        display_name: "表示名"
+        user_id: "ユーザー"
+        individual_completed_at: "個人ワーク完了日時"
+      nasa_game/facilitator:
+        user_id: "ユーザー"
+      nasa_game/individual_ranking:
+        rank: "順位"
+        item_id: "アイテム"
+      nasa_game/team_ranking:
+        rank: "順位"
+        item_id: "アイテム"
+    errors:
+      models:
+        nasa_game/participant:
+          attributes:
+            user_id:
+              already_joined_session: "このセッションには既に参加しています"
+        nasa_game/facilitator:
+          attributes:
+            user_id:
+              already_facilitator: "このセッションでは既にファシリテーターです"

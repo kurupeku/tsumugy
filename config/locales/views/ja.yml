@@ -1,0 +1,22 @@
+ja:
+  site_name: "Tsumugy"
+
+  home:
+    index:
+      hero_title: "Tsumugy"
+      hero_subtitle: "チームビルディングゲームで、楽しくチームの絆を深めよう！"
+      start_button: "ゲームを始める"
+      games_title: "ゲーム一覧"
+      nasa_game_description: "月面からの脱出 - チームで協力してアイテムの優先順位を決めよう"
+      play_button: "プレイする"
+      coming_soon: "Coming Soon"
+      coming_soon_description: "新しいゲームを準備中です"
+      coming_soon_button: "近日公開"
+      footer_description: "チームビルディングゲームプラットフォーム"
+
+  shared:
+    flash:
+      close: "閉じる"
+    navigation:
+      back_to_game_selection: "ゲーム選択に戻る"
+      back_to_top: "トップに戻る"

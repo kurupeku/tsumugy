@@ -1,0 +1,8 @@
+en:
+  activerecord:
+    models:
+      user: "User"
+    attributes:
+      user:
+        session_token: "Session token"
+        expires_at: "Expires at"

@@ -28,9 +28,9 @@ module NasaGame
         end
       end
 
-      redirect_to nasa_game_session_path(@session), notice: "セッションを作成しました"
+      redirect_to nasa_game_session_path(@session), notice: t(".flash.created")
     rescue ActiveRecord::RecordInvalid => e
-      flash.now[:alert] = "セッションの作成に失敗しました: #{e.message}"
+      flash.now[:alert] = t(".flash.create_failed", error: e.message)
       render :new, status: :unprocessable_entity
     end
 
@@ -53,16 +53,16 @@ module NasaGame
 
         @session.result!
       else
-        redirect_to nasa_game_session_path(@session), alert: "無効なフェーズです"
+        redirect_to nasa_game_session_path(@session), alert: t(".flash.invalid_phase")
         return
       end
 
-      redirect_to nasa_game_session_path(@session), notice: "フェーズを更新しました"
+      redirect_to nasa_game_session_path(@session), notice: t(".flash.phase_updated")
     end
 
     def destroy
       @session.destroy!
-      redirect_to root_path, notice: "セッションを終了しました"
+      redirect_to root_path, notice: t(".flash.terminated")
     end
 
     private
@@ -74,13 +74,13 @@ module NasaGame
     def ensure_session_not_expired
       return unless @session.expired?
 
-      redirect_to nasa_game_root_path, alert: "セッションの有効期限が切れています"
+      redirect_to nasa_game_root_path, alert: t("nasa_game.sessions.flash.expired")
     end
 
     def ensure_facilitator
       return if @session.facilitators.exists?(user: current_user)
 
-      redirect_to nasa_game_root_path, alert: "このセッションを終了する権限がありません"
+      redirect_to nasa_game_root_path, alert: t("nasa_game.sessions.flash.not_authorized")
     end
 
     def session_params

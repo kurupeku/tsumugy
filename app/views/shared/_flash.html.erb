@@ -1,0 +1,16 @@
+<% if flash[:notice] || flash[:alert] %>
+  <div class="toast toast-top toast-end z-50">
+    <% if flash[:notice] %>
+      <div class="alert alert-success" data-controller="toast" data-toast-duration-value="5000">
+        <span><%= flash[:notice] %></span>
+        <button type="button" class="btn btn-ghost btn-xs" data-action="toast#dismiss" aria-label="<%= t('shared.flash.close') %>">✕</button>
+      </div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="alert alert-error" data-controller="toast" data-toast-duration-value="5000">
+        <span><%= flash[:alert] %></span>
+        <button type="button" class="btn btn-ghost btn-xs" data-action="toast#dismiss" aria-label="<%= t('shared.flash.close') %>">✕</button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

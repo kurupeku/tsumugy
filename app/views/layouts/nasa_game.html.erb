@@ -18,20 +18,6 @@
   <body class="bg-base-200 min-h-screen">
     <%= yield %>
 
-    <%# Toast container for flash messages %>
-    <% if flash[:notice] || flash[:alert] %>
-      <div class="toast toast-top toast-end z-50">
-        <% if flash[:notice] %>
-          <div class="alert alert-success">
-            <span><%= flash[:notice] %></span>
-          </div>
-        <% end %>
-        <% if flash[:alert] %>
-          <div class="alert alert-error">
-            <span><%= flash[:alert] %></span>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "shared/flash" %>
   </body>
 </html>

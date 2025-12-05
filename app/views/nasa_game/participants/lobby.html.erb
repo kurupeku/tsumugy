@@ -1,4 +1,4 @@
-<% content_for(:title) { "ロビー | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <div class="min-h-screen flex flex-col">
   <%# Header %>
@@ -24,13 +24,13 @@
           </div>
         </div>
 
-        <h2 class="card-title text-2xl mt-6">待機中...</h2>
+        <h2 class="card-title text-2xl mt-6"><%= t(".waiting") %></h2>
         <p class="text-base-content/70">
-          ファシリテーターがゲームを開始するまでお待ちください
+          <%= t(".waiting_message") %>
         </p>
 
         <%# Participants List %>
-        <div class="divider">参加者</div>
+        <div class="divider"><%= t(".participants") %></div>
         <div class="flex flex-wrap gap-2 justify-center max-w-full">
           <% @group.participants.each do |participant| %>
             <div class="badge badge-lg <%= participant == @participant ? 'badge-primary' : 'badge-outline' %> gap-2">
@@ -46,20 +46,17 @@
         <div class="collapse collapse-arrow bg-base-200 mt-6 w-full">
           <input type="checkbox" />
           <div class="collapse-title font-medium">
-            ミッション概要を見る
+            <%= t(".mission_overview") %>
           </div>
           <div class="collapse-content text-left text-sm">
             <p class="mb-2">
-              あなたは宇宙飛行士です。月面の明るい側に不時着し、
-              母船とは約320km離れた場所にいます。
+              <%= t(".mission_paragraph1") %>
             </p>
             <p class="mb-2">
-              宇宙船は大破し、乗組員の生存に関わる15個のアイテムだけが
-              無傷で残っています。
+              <%= t(".mission_paragraph2") %>
             </p>
             <p class="font-bold text-primary">
-              母船にたどり着くために、これらのアイテムに
-              重要度の順位をつけてください。
+              <%= t(".mission_paragraph3") %>
             </p>
           </div>
         </div>

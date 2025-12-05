@@ -21,7 +21,7 @@ module NasaGame
              inverse_of: :participant
 
     validates :display_name, presence: true
-    validates :user_id, uniqueness: { scope: :session_id, message: "このセッションには既に参加しています" }
+    validates :user_id, uniqueness: { scope: :session_id, message: :already_joined_session }
 
     def individual_completed?
       individual_completed_at.present?

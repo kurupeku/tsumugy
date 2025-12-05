@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between">
       <h3 class="card-title text-lg"><%= group.name %></h3>
       <div class="badge badge-outline">
-        <%= group.participants.count %>人
+        <%= t("nasa_game.sessions.group_card.people_count", count: group.participants.count) %>
       </div>
     </div>
 
@@ -17,7 +17,7 @@
         </div>
       <% end %>
       <% if group.participants.empty? %>
-        <span class="text-base-content/50 text-sm">参加者なし</span>
+        <span class="text-base-content/50 text-sm"><%= t("nasa_game.sessions.group_card.no_participants") %></span>
       <% end %>
     </div>
 
@@ -37,7 +37,7 @@
           max="<%= [total, 1].max %>">
         </progress>
         <div class="text-xs text-base-content/60 mt-1">
-          <%= completed %>/<%= total %> 完了
+          <%= t("nasa_game.sessions.group_card.completed_count", completed: completed, total: total) %>
         </div>
       </div>
     <% end %>
@@ -57,7 +57,7 @@
           data-controller="clipboard"
           data-clipboard-text-value="<%= new_nasa_game_group_participant_url(group) %>"
         >
-          コピー
+          <%= t("nasa_game.sessions.group_card.copy") %>
         </button>
       </div>
     </div>

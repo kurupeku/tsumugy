@@ -1,4 +1,4 @@
-<% content_for(:title) { "ダッシュボード | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <div class="min-h-screen p-4">
   <div class="max-w-6xl mx-auto space-y-6">
@@ -6,14 +6,14 @@
     <div class="navbar bg-base-100 rounded-box shadow">
       <div class="flex-1">
         <span class="text-2xl mr-2">🚀</span>
-        <span class="text-xl font-bold">NASAゲーム</span>
+        <span class="text-xl font-bold"><%= t("nasa_game.common.game_name") %></span>
       </div>
       <div class="flex-none">
         <%= button_to nasa_game_session_path(@session),
             method: :delete,
             class: "btn btn-ghost btn-sm text-error",
-            data: { turbo_confirm: "セッションを終了しますか？\nすべてのデータが削除されます。" } do %>
-          セッションを終了
+            data: { turbo_confirm: t(".terminate_confirm") } do %>
+          <%= t(".terminate_session") %>
         <% end %>
       </div>
     </div>
@@ -22,26 +22,26 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title">
-          <span class="text-xl">フェーズ管理</span>
+          <span class="text-xl"><%= t(".phase_management") %></span>
           <%= render "nasa_game/sessions/phase_badge", phase: @session.phase %>
         </h2>
 
         <%# Phase Steps %>
         <ul class="steps w-full my-6">
           <li class="step <%= 'step-primary' if @session.lobby? || @session.individual? || @session.team? || @session.result? %>">
-            <span class="hidden sm:inline">ロビー</span>
+            <span class="hidden sm:inline"><%= t("nasa_game.phases.lobby") %></span>
             <span class="sm:hidden">1</span>
           </li>
           <li class="step <%= 'step-primary' if @session.individual? || @session.team? || @session.result? %>">
-            <span class="hidden sm:inline">個人ワーク</span>
+            <span class="hidden sm:inline"><%= t("nasa_game.phases.individual") %></span>
             <span class="sm:hidden">2</span>
           </li>
           <li class="step <%= 'step-primary' if @session.team? || @session.result? %>">
-            <span class="hidden sm:inline">チームワーク</span>
+            <span class="hidden sm:inline"><%= t("nasa_game.phases.team") %></span>
             <span class="sm:hidden">3</span>
           </li>
           <li class="step <%= 'step-primary' if @session.result? %>">
-            <span class="hidden sm:inline">結果発表</span>
+            <span class="hidden sm:inline"><%= t("nasa_game.phases.result") %></span>
             <span class="sm:hidden">4</span>
           </li>
         </ul>
@@ -54,36 +54,36 @@
                 method: :patch,
                 params: { session: { phase: "individual" } },
                 class: "btn btn-primary btn-lg",
-                data: { turbo_confirm: "個人ワークを開始しますか？" } do %>
-              個人ワークを開始
+                data: { turbo_confirm: t(".start_individual_confirm") } do %>
+              <%= t(".start_individual") %>
             <% end %>
           <% when "individual" %>
             <%= button_to nasa_game_session_path(@session),
                 method: :patch,
                 params: { session: { phase: "team" } },
                 class: "btn btn-secondary btn-lg",
-                data: { turbo_confirm: "チームワークを開始しますか？" } do %>
-              チームワークを開始
+                data: { turbo_confirm: t(".start_team_confirm") } do %>
+              <%= t(".start_team") %>
             <% end %>
           <% when "team" %>
             <%= button_to nasa_game_session_path(@session),
                 method: :patch,
                 params: { session: { phase: "result" } },
                 class: "btn btn-accent btn-lg",
-                data: { turbo_confirm: "結果を発表しますか？" } do %>
-              結果を発表
+                data: { turbo_confirm: t(".show_results_confirm") } do %>
+              <%= t(".show_results") %>
             <% end %>
           <% when "result" %>
             <div class="flex flex-col items-center gap-4">
               <div class="badge badge-success badge-lg gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                完了
+                <%= t(".completed") %>
               </div>
               <%= button_to nasa_game_session_path(@session),
                   method: :delete,
                   class: "btn btn-error btn-lg",
-                  data: { turbo_confirm: "セッションを終了しますか？\nすべてのデータが削除されます。" } do %>
-                セッションを終了
+                  data: { turbo_confirm: t(".terminate_confirm") } do %>
+                <%= t(".terminate_session") %>
               <% end %>
             </div>
           <% end %>
@@ -95,8 +95,8 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title mb-4">
-          グループ一覧
-          <div class="badge badge-neutral"><%= @groups.count %>グループ</div>
+          <%= t(".groups_list") %>
+          <div class="badge badge-neutral"><%= t(".groups_count", count: @groups.count) %></div>
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -113,7 +113,7 @@
         <div class="stat-figure text-primary">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
         </div>
-        <div class="stat-title">総参加者数</div>
+        <div class="stat-title"><%= t(".total_participants") %></div>
         <div class="stat-value text-primary"><%= @session.participants.count %></div>
       </div>
 
@@ -121,7 +121,7 @@
         <div class="stat-figure text-secondary">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </div>
-        <div class="stat-title">個人ワーク完了</div>
+        <div class="stat-title"><%= t(".individual_completed") %></div>
         <div class="stat-value text-secondary">
           <%= @session.participants.where.not(individual_completed_at: nil).count %>
         </div>
@@ -132,7 +132,7 @@
         <div class="stat-figure text-accent">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
         </div>
-        <div class="stat-title">チームワーク完了</div>
+        <div class="stat-title"><%= t(".team_completed") %></div>
         <div class="stat-value text-accent">
           <%= @groups.where.not(completed_at: nil).count %>
         </div>

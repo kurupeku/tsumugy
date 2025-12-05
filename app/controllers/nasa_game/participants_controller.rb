@@ -25,9 +25,9 @@ module NasaGame
       @participant.user = current_user
 
       if @participant.save
-        redirect_to nasa_game_participant_path(@participant), notice: "グループに参加しました"
+        redirect_to nasa_game_participant_path(@participant), notice: t(".flash.joined")
       else
-        flash.now[:alert] = "参加に失敗しました"
+        flash.now[:alert] = t(".flash.join_failed")
         render :new, status: :unprocessable_entity
       end
     end
@@ -58,17 +58,17 @@ module NasaGame
 
       # Only allow completing individual work during individual phase
       unless @session.individual?
-        redirect_to nasa_game_participant_path(@participant), alert: "現在のフェーズでは操作できません"
+        redirect_to nasa_game_participant_path(@participant), alert: t(".flash.invalid_phase")
         return
       end
 
       if @participant.individual_completed?
-        redirect_to nasa_game_participant_path(@participant), alert: "既に個人ワークを完了しています"
+        redirect_to nasa_game_participant_path(@participant), alert: t(".flash.already_completed")
         return
       end
 
       @participant.update!(individual_completed_at: Time.current)
-      redirect_to nasa_game_participant_path(@participant), notice: "個人ワークを完了しました"
+      redirect_to nasa_game_participant_path(@participant), notice: t(".flash.individual_completed")
     end
 
     private

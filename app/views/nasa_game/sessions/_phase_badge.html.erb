@@ -6,11 +6,5 @@
     "team" => "badge-secondary",
     "result" => "badge-success"
   }
-  labels = {
-    "lobby" => "ロビー",
-    "individual" => "個人ワーク",
-    "team" => "チームワーク",
-    "result" => "結果発表"
-  }
 %>
-<div class="badge <%= colors[phase] %>"><%= labels[phase] %></div>
+<div class="badge <%= colors[phase] %>"><%= t("nasa_game.phases.#{phase}") %></div>

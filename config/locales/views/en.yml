@@ -1,0 +1,22 @@
+en:
+  site_name: "Tsumugy"
+
+  home:
+    index:
+      hero_title: "Tsumugy"
+      hero_subtitle: "Strengthen team bonds through fun team building games!"
+      start_button: "Start Game"
+      games_title: "Game List"
+      nasa_game_description: "Escape from the Moon - Work together to prioritize survival items"
+      play_button: "Play"
+      coming_soon: "Coming Soon"
+      coming_soon_description: "New games are being prepared"
+      coming_soon_button: "Coming Soon"
+      footer_description: "Team Building Game Platform"
+
+  shared:
+    flash:
+      close: "Close"
+    navigation:
+      back_to_game_selection: "Back to game selection"
+      back_to_top: "Back to top"

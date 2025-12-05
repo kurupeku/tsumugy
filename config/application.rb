@@ -46,5 +46,11 @@ module Tsumugy
         request_specs: false,
         routing_specs: false
     end
+
+    # I18n settings
+    config.i18n.default_locale = :ja
+    config.i18n.available_locales = [:ja, :en]
+    config.i18n.fallbacks = [:ja]
+    config.i18n.load_path += Rails.root.glob("config/locales/**/*.yml")
   end
 end

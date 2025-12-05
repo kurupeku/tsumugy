@@ -10,6 +10,6 @@ module NasaGame
                class_name: "NasaGame::Session",
                inverse_of: :facilitators
 
-    validates :user_id, uniqueness: { scope: :session_id, message: "このセッションでは既にファシリテーターです" }
+    validates :user_id, uniqueness: { scope: :session_id, message: :already_facilitator }
   end
 end

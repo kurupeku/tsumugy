@@ -1,0 +1,38 @@
+en:
+  activerecord:
+    models:
+      nasa_game/session: "Session"
+      nasa_game/group: "Group"
+      nasa_game/participant: "Participant"
+      nasa_game/facilitator: "Facilitator"
+      nasa_game/individual_ranking: "Individual Ranking"
+      nasa_game/team_ranking: "Team Ranking"
+    attributes:
+      nasa_game/session:
+        expires_at: "Expires at"
+        phase: "Phase"
+      nasa_game/group:
+        name: "Name"
+        position: "Position"
+      nasa_game/participant:
+        display_name: "Display name"
+        user_id: "User"
+        individual_completed_at: "Individual work completed at"
+      nasa_game/facilitator:
+        user_id: "User"
+      nasa_game/individual_ranking:
+        rank: "Rank"
+        item_id: "Item"
+      nasa_game/team_ranking:
+        rank: "Rank"
+        item_id: "Item"
+    errors:
+      models:
+        nasa_game/participant:
+          attributes:
+            user_id:
+              already_joined_session: "has already joined this session"
+        nasa_game/facilitator:
+          attributes:
+            user_id:
+              already_facilitator: "is already a facilitator for this session"

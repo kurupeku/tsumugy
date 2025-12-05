@@ -9,7 +9,7 @@ module NasaGame
     private
 
     def handle_not_found
-      redirect_to nasa_game_root_path, alert: "指定されたページが見つかりませんでした"
+      redirect_to nasa_game_root_path, alert: I18n.t("nasa_game.errors.not_found")
     end
   end
 end

@@ -1,4 +1,4 @@
-<% content_for(:title) { "グループに参加 | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <div class="min-h-screen flex items-center justify-center p-4">
   <div class="card bg-base-100 shadow-xl w-full max-w-sm">
@@ -6,8 +6,8 @@
       <%# Header %>
       <div class="text-center mb-4">
         <div class="text-5xl mb-3">🌙</div>
-        <h1 class="card-title justify-center text-xl">NASAゲーム</h1>
-        <p class="text-base-content/70 text-sm">月面からの脱出</p>
+        <h1 class="card-title justify-center text-xl"><%= t("nasa_game.common.game_name") %></h1>
+        <p class="text-base-content/70 text-sm"><%= t("nasa_game.common.game_subtitle") %></p>
       </div>
 
       <%# Group Info %>
@@ -15,7 +15,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <div>
           <div class="font-bold"><%= @group.name %></div>
-          <div class="text-xs">に参加します</div>
+          <div class="text-xs"><%= t(".joining_group") %></div>
         </div>
       </div>
 
@@ -25,29 +25,29 @@
                     class: "space-y-4" do |f| %>
         <div class="form-control">
           <label class="label" for="participant_display_name">
-            <span class="label-text">表示名</span>
+            <span class="label-text"><%= t(".display_name_label") %></span>
           </label>
           <%= f.text_field :display_name,
-              placeholder: "例: 田中太郎",
+              placeholder: t(".display_name_placeholder"),
               class: "input input-bordered input-lg w-full",
               maxlength: 20,
               required: true,
               autofocus: true %>
           <label class="label">
             <span class="label-text-alt text-base-content/60">
-              他の参加者に表示される名前です
+              <%= t(".display_name_hint") %>
             </span>
           </label>
         </div>
 
         <div class="card-actions">
-          <%= f.submit "参加する", class: "btn btn-primary btn-lg w-full" %>
+          <%= f.submit t(".submit"), class: "btn btn-primary btn-lg w-full" %>
         </div>
       <% end %>
 
       <%# Current Participants Preview %>
       <% if @group.participants.any? %>
-        <div class="divider text-xs">参加中のメンバー</div>
+        <div class="divider text-xs"><%= t(".current_members") %></div>
         <div class="flex flex-wrap gap-1 justify-center">
           <% @group.participants.limit(10).each do |participant| %>
             <div class="badge badge-ghost badge-sm"><%= participant.display_name %></div>

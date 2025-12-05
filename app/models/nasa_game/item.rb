@@ -124,5 +124,15 @@ module NasaGame
         reasoning_en: "No oxygen to sustain flame"
       }
     ]
+
+    # Returns the item name based on the current locale
+    def name
+      I18n.locale == :ja ? name_ja : name_en
+    end
+
+    # Returns the reasoning based on the current locale
+    def reasoning
+      I18n.locale == :ja ? reasoning_ja : reasoning_en
+    end
   end
 end

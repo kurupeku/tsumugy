@@ -3,16 +3,16 @@
   <div class="hero min-h-[60vh] bg-base-100">
     <div class="hero-content text-center">
       <div class="max-w-md">
-        <h1 class="text-5xl font-bold">Tsumugy</h1>
-        <p class="py-6">チームビルディングゲームで、楽しくチームの絆を深めよう！</p>
-        <%= link_to "ゲームを始める", nasa_game_root_path, class: "btn btn-primary" %>
+        <h1 class="text-5xl font-bold"><%= t(".hero_title") %></h1>
+        <p class="py-6"><%= t(".hero_subtitle") %></p>
+        <%= link_to t(".start_button"), nasa_game_root_path, class: "btn btn-primary" %>
       </div>
     </div>
   </div>
 
   <!-- Features Section -->
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-center mb-12">ゲーム一覧</h2>
+    <h2 class="text-3xl font-bold text-center mb-12"><%= t(".games_title") %></h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- NASA Game Card -->
       <%= link_to nasa_game_root_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
@@ -22,10 +22,10 @@
           </div>
         </figure>
         <div class="card-body items-center text-center">
-          <h2 class="card-title">NASAゲーム</h2>
-          <p>月面からの脱出 - チームで協力してアイテムの優先順位を決めよう</p>
+          <h2 class="card-title"><%= t("nasa_game.common.game_name") %></h2>
+          <p><%= t(".nasa_game_description") %></p>
           <div class="card-actions">
-            <span class="btn btn-primary">プレイする</span>
+            <span class="btn btn-primary"><%= t(".play_button") %></span>
           </div>
         </div>
       <% end %>
@@ -38,10 +38,10 @@
           </div>
         </figure>
         <div class="card-body items-center text-center">
-          <h2 class="card-title">Coming Soon</h2>
-          <p>新しいゲームを準備中です</p>
+          <h2 class="card-title"><%= t(".coming_soon") %></h2>
+          <p><%= t(".coming_soon_description") %></p>
           <div class="card-actions">
-            <button class="btn btn-secondary btn-disabled">近日公開</button>
+            <button class="btn btn-secondary btn-disabled"><%= t(".coming_soon_button") %></button>
           </div>
         </div>
       </div>
@@ -54,10 +54,10 @@
           </div>
         </figure>
         <div class="card-body items-center text-center">
-          <h2 class="card-title">Coming Soon</h2>
-          <p>新しいゲームを準備中です</p>
+          <h2 class="card-title"><%= t(".coming_soon") %></h2>
+          <p><%= t(".coming_soon_description") %></p>
           <div class="card-actions">
-            <button class="btn btn-accent btn-disabled">近日公開</button>
+            <button class="btn btn-accent btn-disabled"><%= t(".coming_soon_button") %></button>
           </div>
         </div>
       </div>
@@ -67,8 +67,8 @@
   <!-- Footer -->
   <footer class="footer footer-center p-10 bg-base-300 text-base-content">
     <aside>
-      <p class="font-bold">Tsumugy</p>
-      <p>チームビルディングゲームプラットフォーム</p>
+      <p class="font-bold"><%= t(".hero_title") %></p>
+      <p><%= t(".footer_description") %></p>
     </aside>
   </footer>
 </div>

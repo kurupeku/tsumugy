@@ -38,7 +38,7 @@ module NasaGame
     def authenticate_participant!
       return if current_participant
 
-      redirect_to nasa_game_root_path, alert: "参加登録が必要です"
+      redirect_to nasa_game_root_path, alert: I18n.t("nasa_game.errors.authentication_required")
     end
   end
 end

@@ -1,14 +1,14 @@
-<% content_for(:title) { "結果発表 | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <%
   def score_evaluation(score)
     case score
-    when 0..25 then "優秀"
-    when 26..32 then "良好"
-    when 33..45 then "平均的"
-    when 46..55 then "まあまあ"
-    when 56..70 then "要改善"
-    else "もっと頑張ろう"
+    when 0..25 then I18n.t("nasa_game.participants.result.evaluations.excellent")
+    when 26..32 then I18n.t("nasa_game.participants.result.evaluations.good")
+    when 33..45 then I18n.t("nasa_game.participants.result.evaluations.average")
+    when 46..55 then I18n.t("nasa_game.participants.result.evaluations.fair")
+    when 56..70 then I18n.t("nasa_game.participants.result.evaluations.needs_improvement")
+    else I18n.t("nasa_game.participants.result.evaluations.try_harder")
     end
   end
 %>
@@ -18,7 +18,7 @@
   <div class="navbar bg-base-100 shadow-lg sticky top-0 z-20">
     <div class="flex-1">
       <span class="text-xl">🏆</span>
-      <span class="font-bold ml-2">結果発表</span>
+      <span class="font-bold ml-2"><%= t(".header") %></span>
     </div>
     <div class="flex-none">
       <span class="badge badge-primary"><%= @group.name %></span>
@@ -32,7 +32,7 @@
         <div class="stat-figure text-primary">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
         </div>
-        <div class="stat-title">あなたの個人スコア</div>
+        <div class="stat-title"><%= t(".individual_score") %></div>
         <div class="stat-value text-primary"><%= @individual_score %></div>
         <div class="stat-desc"><%= score_evaluation(@individual_score) %></div>
       </div>
@@ -41,7 +41,7 @@
         <div class="stat-figure text-secondary">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
         </div>
-        <div class="stat-title">チームスコア</div>
+        <div class="stat-title"><%= t(".team_score") %></div>
         <div class="stat-value text-secondary"><%= @team_score %></div>
         <div class="stat-desc"><%= score_evaluation(@team_score) %></div>
       </div>
@@ -54,12 +54,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
           <% end %>
         </div>
-        <div class="stat-title">シナジー効果</div>
+        <div class="stat-title"><%= t(".synergy_effect") %></div>
         <div class="stat-value <%= @synergy_effect >= 0 ? 'text-success' : 'text-error' %>">
           <%= @synergy_effect >= 0 ? "+" : "" %><%= @synergy_effect %>
         </div>
         <div class="stat-desc">
-          <%= @synergy_effect >= 0 ? "チームワークが効果的でした" : "改善の余地があります" %>
+          <%= @synergy_effect >= 0 ? t(".synergy_positive") : t(".synergy_negative") %>
         </div>
       </div>
     </div>
@@ -68,8 +68,7 @@
     <div class="alert">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       <div class="text-sm">
-        <strong>スコアの見方:</strong> 誤差の合計値です。<strong>数値が小さいほど優秀</strong>です。
-        0-25点で優秀、26-32点で良好、33-45点で平均的、46点以上で要改善です。
+        <%= t(".score_guide_html") %>
       </div>
     </div>
 
@@ -80,11 +79,11 @@
           <table class="table table-sm">
             <thead>
               <tr class="bg-base-200">
-                <th class="text-center w-12">正解</th>
-                <th>アイテム</th>
-                <th class="text-center w-16">個人</th>
-                <th class="text-center w-16">チーム</th>
-                <th class="text-center w-12">誤差</th>
+                <th class="text-center w-12"><%= t(".table_correct_rank") %></th>
+                <th><%= t(".table_item") %></th>
+                <th class="text-center w-16"><%= t(".table_individual") %></th>
+                <th class="text-center w-16"><%= t(".table_team") %></th>
+                <th class="text-center w-12"><%= t(".table_error") %></th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +99,7 @@
                     </span>
                   </td>
                   <td>
-                    <div class="font-medium text-sm"><%= item.name_ja %></div>
+                    <div class="font-medium text-sm"><%= item.name %></div>
                   </td>
                   <td class="text-center">
                     <span class="<%= individual_error == 0 ? 'text-success font-bold' : '' %>">
@@ -122,7 +121,7 @@
             </tbody>
             <tfoot>
               <tr class="bg-base-200 font-bold">
-                <td colspan="2" class="text-right">合計誤差:</td>
+                <td colspan="2" class="text-right"><%= t(".total_error") %></td>
                 <td class="text-center text-primary"><%= @individual_score %></td>
                 <td class="text-center text-secondary"><%= @team_score %></td>
                 <td></td>
@@ -137,8 +136,8 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-lg mb-4">
-          NASAの解説
-          <div class="badge badge-info badge-sm">公式回答</div>
+          <%= t(".nasa_explanation") %>
+          <div class="badge badge-info badge-sm"><%= t(".official_answer") %></div>
         </h2>
 
         <div class="space-y-2">
@@ -147,10 +146,10 @@
               <input type="checkbox" />
               <div class="collapse-title text-sm font-medium flex items-center gap-2">
                 <span class="badge badge-success badge-sm"><%= item.correct_rank %></span>
-                <%= item.name_ja %>
+                <%= item.name %>
               </div>
               <div class="collapse-content">
-                <p class="text-sm text-base-content/80"><%= item.reasoning_ja %></p>
+                <p class="text-sm text-base-content/80"><%= item.reasoning %></p>
               </div>
             </div>
           <% end %>
@@ -162,7 +161,7 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-lg mb-4">
-          グループメンバーのスコア
+          <%= t(".group_members_score") %>
         </h2>
 
         <div class="space-y-3">
@@ -181,9 +180,9 @@
                 <div class="flex justify-between items-center mb-1">
                   <span class="font-medium <%= p == @participant ? 'text-primary' : '' %>">
                     <%= p.display_name %>
-                    <%= "(あなた)" if p == @participant %>
+                    <%= t(".you") if p == @participant %>
                   </span>
-                  <span class="font-bold"><%= score %>点</span>
+                  <span class="font-bold"><%= t(".points", score: score) %></span>
                 </div>
                 <progress
                   class="progress <%= score <= 25 ? 'progress-success' : score <= 45 ? 'progress-warning' : 'progress-error' %> w-full h-2"
@@ -203,7 +202,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
         </svg>
-        トップに戻る
+        <%= t("shared.navigation.back_to_top") %>
       <% end %>
     </div>
   </div>

@@ -1,4 +1,4 @@
-<% content_for(:title) { "セッション作成 | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <div class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-md">
@@ -8,7 +8,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
-        ゲーム選択に戻る
+        <%= t("shared.navigation.back_to_game_selection") %>
       <% end %>
     </div>
 
@@ -18,15 +18,15 @@
         <%# Header %>
         <div class="text-center mb-6">
           <div class="text-6xl mb-4">🚀</div>
-          <h1 class="card-title justify-center text-2xl">NASAゲーム</h1>
-          <p class="text-base-content/70">月面からの脱出</p>
+          <h1 class="card-title justify-center text-2xl"><%= t("nasa_game.common.game_name") %></h1>
+          <p class="text-base-content/70"><%= t("nasa_game.common.game_subtitle") %></p>
         </div>
 
         <%# Form %>
         <%= form_with url: nasa_game_sessions_path, method: :post, class: "space-y-6" do |f| %>
           <div class="form-control">
             <label class="label" for="group_count">
-              <span class="label-text text-lg">グループ数</span>
+              <span class="label-text text-lg"><%= t(".group_count_label") %></span>
             </label>
             <input
               type="number"
@@ -40,24 +40,24 @@
             />
             <label class="label">
               <span class="label-text-alt text-base-content/60">
-                1〜20グループまで作成できます
+                <%= t(".group_count_hint") %>
               </span>
             </label>
           </div>
 
           <div class="card-actions">
-            <%= f.submit "セッションを作成", class: "btn btn-primary btn-lg w-full" %>
+            <%= f.submit t(".submit"), class: "btn btn-primary btn-lg w-full" %>
           </div>
         <% end %>
 
         <%# Info %>
-        <div class="divider">ゲームの流れ</div>
+        <div class="divider"><%= t(".flow_title") %></div>
         <ul class="steps steps-vertical text-sm">
-          <li class="step step-primary">グループURLを参加者に共有</li>
-          <li class="step">参加者がロビーに集合</li>
-          <li class="step">個人ワーク開始</li>
-          <li class="step">チームワーク開始</li>
-          <li class="step">結果発表</li>
+          <li class="step step-primary"><%= t(".flow_step1") %></li>
+          <li class="step"><%= t(".flow_step2") %></li>
+          <li class="step"><%= t(".flow_step3") %></li>
+          <li class="step"><%= t(".flow_step4") %></li>
+          <li class="step"><%= t(".flow_step5") %></li>
         </ul>
       </div>
     </div>

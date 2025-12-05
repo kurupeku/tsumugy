@@ -220,3 +220,80 @@ end
 
 - Docker コンテナが起動しない場合は `tmp/pids/server.pid` を削除して再起動
 - マイグレーション後はテスト DB も更新: `bin/rails db:test:prepare`
+
+## 国際化 (i18n)
+
+- **デフォルトロケール**: `ja`（日本語）
+- **対応ロケール**: `ja`, `en`
+- **ロケール判定**: Accept-Language ヘッダーで自動判定（日本語以外は英語）
+- `LocaleDetection` Concern を ApplicationController に include
+
+### 翻訳ファイル構成
+
+```text
+config/locales/
+├── models/
+│   ├── ja.yml          # 共通モデル属性
+│   ├── en.yml
+│   └── nasa_game/
+│       ├── ja.yml      # NasaGame 名前空間モデル
+│       └── en.yml
+└── views/
+    ├── ja.yml          # 共通ビュー（home, shared）
+    ├── en.yml
+    └── nasa_game/
+        ├── ja.yml      # NasaGame ビュー
+        └── en.yml
+```
+
+### 翻訳キーの命名規則
+
+- **ビュー**: Lazy lookup を使用（`t(".key")` → `controller.action.key`）
+- **コントローラー**: フラッシュは `t(".flash.key")` でまとめる
+- **HTML を含む翻訳**: `_html` サフィックス（例: `instruction_html`）
+- **バリデーションメッセージ**: モデルでシンボル参照、YAML で定義
+
+```ruby
+# モデル側
+validates :user_id, uniqueness: { scope: :session_id, message: :already_joined_session }
+
+# YAML 側 (models/nasa_game/ja.yml)
+ja:
+  activerecord:
+    errors:
+      models:
+        nasa_game/participant:
+          attributes:
+            user_id:
+              already_joined_session: "このセッションには既に参加しています"
+```
+
+### ActiveHash モデルのロケール対応
+
+多言語フィールドを持つ ActiveHash モデルでは、ロケール対応のアクセサメソッドを定義する:
+
+```ruby
+# app/models/nasa_game/item.rb
+def name
+  I18n.locale == :ja ? name_ja : name_en
+end
+
+def reasoning
+  I18n.locale == :ja ? reasoning_ja : reasoning_en
+end
+```
+
+### SystemSpec でのロケール
+
+- **常に日本語（`ja`）で実行**される設定
+- アサーションは日本語ベタ書きで OK
+- `spec/support/i18n.rb` でロケールを `ja` に固定
+- Playwright ドライバーに `locale: "ja-JP"` を設定
+
+### 新規ゲーム追加時の i18n 対応
+
+1. `config/locales/models/new_game/ja.yml`, `en.yml` を作成
+2. `config/locales/views/new_game/ja.yml`, `en.yml` を作成
+3. モデルのバリデーションメッセージはシンボル参照に
+4. ビューは Lazy lookup (`t(".key")`) を使用
+5. HTML を含む翻訳は `_html` サフィックスを付ける

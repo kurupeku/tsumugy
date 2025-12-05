@@ -1,4 +1,4 @@
-<% content_for(:title) { "チームワーク | NASAゲーム" } %>
+<% content_for(:title) { t(".page_title") } %>
 
 <div class="min-h-screen flex flex-col pb-4">
   <%# Header %>
@@ -9,11 +9,11 @@
     </div>
     <div class="flex-none gap-2">
       <% if @group.completed? %>
-        <div class="badge badge-success">完了済み</div>
+        <div class="badge badge-success"><%= t(".completed") %></div>
       <% else %>
         <div class="badge badge-secondary gap-1">
           <span class="w-2 h-2 bg-secondary-content rounded-full animate-pulse"></span>
-          <%= @group.participants.count %>人参加中
+          <%= t(".participants_count", count: @group.participants.count) %>
         </div>
       <% end %>
     </div>
@@ -22,7 +22,7 @@
   <%# Instructions %>
   <div class="bg-warning/10 border-b border-warning/30 p-3 text-center">
     <p class="text-sm text-warning-content">
-      グループで話し合いながら、<strong>合意</strong>の上でランキングを決めてください
+      <%= t(".instruction_html") %>
     </p>
   </div>
 
@@ -32,7 +32,7 @@
       <%# Read-only view after completion %>
       <div class="alert alert-success mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span>チームワークは完了しています。結果発表をお待ちください。</span>
+        <span><%= t(".completed_message") %></span>
       </div>
     <% end %>
 
@@ -57,7 +57,7 @@
             <%# Item Info %>
             <div class="flex-1 min-w-0">
               <p class="font-medium text-sm leading-tight">
-                <%= NasaGame::Item.find(ranking.item_id).name_ja %>
+                <%= NasaGame::Item.find(ranking.item_id).name %>
               </p>
             </div>
 
@@ -80,14 +80,14 @@
     <div class="collapse collapse-arrow bg-base-100 shadow">
       <input type="checkbox" />
       <div class="collapse-title font-medium text-sm">
-        メンバーの個人ランキングを参照
+        <%= t(".reference_title") %>
       </div>
       <div class="collapse-content">
         <div class="overflow-x-auto">
           <table class="table table-xs">
             <thead>
               <tr>
-                <th class="w-8">アイテム</th>
+                <th class="w-8"><%= t(".item_header") %></th>
                 <% @group.participants.each do |p| %>
                   <th class="text-center min-w-12">
                     <span class="badge badge-ghost badge-sm <%= p == @participant ? 'badge-primary' : '' %>">
@@ -100,8 +100,8 @@
             <tbody>
               <% NasaGame::Item.all.each do |item| %>
                 <tr>
-                  <td class="text-xs text-base-content/60 max-w-24 truncate" title="<%= item.name_ja %>">
-                    <%= item.name_ja.truncate(10) %>
+                  <td class="text-xs text-base-content/60 max-w-24 truncate" title="<%= item.name %>">
+                    <%= item.name.truncate(10) %>
                   </td>
                   <% @group.participants.each do |p| %>
                     <% rank = p.individual_rankings.find { |r| r.item_id == item.id }&.rank %>
