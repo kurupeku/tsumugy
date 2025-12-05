@@ -1,74 +1,97 @@
 <div class="min-h-screen bg-base-200">
-  <!-- Hero Section -->
-  <div class="hero min-h-[60vh] bg-base-100">
+  <!-- Hero Section (Simplified) -->
+  <div class="hero min-h-[40vh] bg-base-100">
     <div class="hero-content text-center">
-      <div class="max-w-md">
+      <div class="max-w-lg">
         <h1 class="text-5xl font-bold"><%= t(".hero_title") %></h1>
-        <p class="py-6"><%= t(".hero_subtitle") %></p>
-        <%= link_to t(".start_button"), nasa_game_root_path, class: "btn btn-primary" %>
+        <p class="py-6 text-lg text-base-content/80"><%= t(".hero_subtitle") %></p>
       </div>
     </div>
   </div>
 
-  <!-- Features Section -->
+  <!-- Games Section -->
   <div class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold text-center mb-12"><%= t(".games_title") %></h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- NASA Game Card -->
-      <%= link_to nasa_game_root_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
-        <figure class="px-10 pt-10">
-          <div class="bg-primary/20 rounded-xl w-full h-32 flex items-center justify-center">
-            <span class="text-6xl">🌙</span>
+    <h2 class="text-3xl font-bold text-center mb-4"><%= t(".games_title") %></h2>
+    <p class="text-center text-base-content/60 mb-12"><%= t(".games_subtitle") %></p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <% Game.all.each do |game| %>
+        <% if game.available? %>
+          <!-- Available Game Card -->
+          <div
+            class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-1 group"
+            data-controller="game-modal"
+          >
+            <figure class="px-8 pt-8">
+              <% if game.has_image? %>
+                <div class="rounded-2xl w-full h-40 overflow-hidden">
+                  <%= image_tag game.image_path, alt: game.name, class: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" %>
+                </div>
+              <% else %>
+                <div class="<%= game.icon_bg_class %> rounded-2xl w-full h-40 flex items-center justify-center group-hover:opacity-90 transition-opacity">
+                  <span class="text-7xl"><%= game.icon %></span>
+                </div>
+              <% end %>
+            </figure>
+            <div class="card-body">
+              <h3 class="card-title"><%= game.name %></h3>
+              <p class="text-base-content/70 text-sm"><%= game.short_description %></p>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <div class="badge badge-ghost badge-sm gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                  </svg>
+                  <%= game.players %>
+                </div>
+                <div class="badge badge-ghost badge-sm gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <%= game.duration %>
+                </div>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <button
+                  class="btn btn-primary btn-sm"
+                  data-action="click->game-modal#open"
+                >
+                  <%= t(".view_details") %>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Game Detail Modal -->
+            <%= render "shared/game_detail_modal", game: game %>
           </div>
-        </figure>
-        <div class="card-body items-center text-center">
-          <h2 class="card-title"><%= t("nasa_game.common.game_name") %></h2>
-          <p><%= t(".nasa_game_description") %></p>
-          <div class="card-actions">
-            <span class="btn btn-primary"><%= t(".play_button") %></span>
+        <% else %>
+          <!-- Coming Soon Card -->
+          <div class="card bg-base-100 shadow-xl opacity-60">
+            <figure class="px-8 pt-8">
+              <div class="<%= game.icon_bg_class %> rounded-2xl w-full h-40 flex items-center justify-center">
+                <span class="text-7xl"><%= game.icon %></span>
+              </div>
+            </figure>
+            <div class="card-body">
+              <h3 class="card-title"><%= game.name %></h3>
+              <p class="text-base-content/70 text-sm"><%= game.short_description %></p>
+              <div class="card-actions justify-end mt-4">
+                <span class="btn btn-ghost btn-sm btn-disabled"><%= t(".coming_soon_button") %></span>
+              </div>
+            </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
-
-      <!-- Card 2 -->
-      <div class="card bg-base-100 shadow-xl">
-        <figure class="px-10 pt-10">
-          <div class="bg-secondary/20 rounded-xl w-full h-32 flex items-center justify-center">
-            <span class="text-6xl">🎲</span>
-          </div>
-        </figure>
-        <div class="card-body items-center text-center">
-          <h2 class="card-title"><%= t(".coming_soon") %></h2>
-          <p><%= t(".coming_soon_description") %></p>
-          <div class="card-actions">
-            <button class="btn btn-secondary btn-disabled"><%= t(".coming_soon_button") %></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="card bg-base-100 shadow-xl">
-        <figure class="px-10 pt-10">
-          <div class="bg-accent/20 rounded-xl w-full h-32 flex items-center justify-center">
-            <span class="text-6xl">🏆</span>
-          </div>
-        </figure>
-        <div class="card-body items-center text-center">
-          <h2 class="card-title"><%= t(".coming_soon") %></h2>
-          <p><%= t(".coming_soon_description") %></p>
-          <div class="card-actions">
-            <button class="btn btn-accent btn-disabled"><%= t(".coming_soon_button") %></button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- Footer -->
   <footer class="footer footer-center p-10 bg-base-300 text-base-content">
     <aside>
-      <p class="font-bold"><%= t(".hero_title") %></p>
-      <p><%= t(".footer_description") %></p>
+      <p class="font-bold text-lg"><%= t(".hero_title") %></p>
+      <p class="text-base-content/70"><%= t(".footer_description") %></p>
     </aside>
   </footer>
 </div>

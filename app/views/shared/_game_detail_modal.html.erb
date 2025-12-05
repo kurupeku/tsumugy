@@ -1,0 +1,103 @@
+<%#
+  Game Detail Modal Partial
+
+  Required locals:
+    - game: Game - ActiveHash Game instance
+%>
+<dialog
+  id="game-modal-<%= game.slug %>"
+  class="modal modal-bottom sm:modal-middle"
+  data-game-modal-target="dialog"
+  data-action="click->game-modal#backdropClick"
+>
+  <div class="modal-box sm:max-w-2xl">
+    <!-- Header -->
+    <div class="flex items-start gap-4 mb-6">
+      <% if game.has_image? %>
+        <div class="rounded-xl w-16 h-16 overflow-hidden shrink-0">
+          <%= image_tag game.image_path, alt: game.name, class: "w-full h-full object-cover" %>
+        </div>
+      <% else %>
+        <div class="<%= game.icon_bg_class %> rounded-xl w-16 h-16 flex items-center justify-center shrink-0">
+          <span class="text-3xl"><%= game.icon %></span>
+        </div>
+      <% end %>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-bold text-2xl"><%= game.name %></h3>
+        <p class="text-base-content/60"><%= game.subtitle %></p>
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-circle btn-ghost shrink-0"
+        data-action="game-modal#close"
+        aria-label="<%= t('shared.game_detail_modal.close') %>"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Game Info Badges -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <div class="flex items-center gap-2 bg-base-200 rounded-lg px-4 py-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-primary">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+        </svg>
+        <div>
+          <div class="text-xs text-base-content/60"><%= t("shared.game_detail_modal.players") %></div>
+          <div class="font-semibold"><%= game.players %></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 bg-base-200 rounded-lg px-4 py-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-primary">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <div class="text-xs text-base-content/60"><%= t("shared.game_detail_modal.duration") %></div>
+          <div class="font-semibold"><%= game.duration %></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-6">
+      <h4 class="font-semibold text-lg mb-2"><%= t("shared.game_detail_modal.about") %></h4>
+      <p class="text-base-content/80 leading-relaxed"><%= game.description %></p>
+    </div>
+
+    <!-- Game Flow -->
+    <% if game.flow_steps.present? %>
+      <div class="mb-6">
+        <h4 class="font-semibold text-lg mb-3"><%= t("shared.game_detail_modal.flow") %></h4>
+        <ul class="steps steps-vertical w-full">
+          <% game.flow_steps.each_with_index do |step, index| %>
+            <li class="step step-primary" data-content="<%= index + 1 %>">
+              <span class="text-left text-sm"><%= step %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Action Buttons -->
+    <div class="modal-action">
+      <button
+        type="button"
+        class="btn btn-ghost"
+        data-action="game-modal#close"
+      >
+        <%= t("shared.game_detail_modal.cancel") %>
+      </button>
+      <%= link_to send(game.start_path), class: "btn btn-primary" do %>
+        <%= t("shared.game_detail_modal.start") %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      <% end %>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
