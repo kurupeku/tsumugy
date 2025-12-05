@@ -17,6 +17,8 @@ en:
   shared:
     flash:
       close: "Close"
+    confirm_dialog:
+      cancel: "Cancel"
     navigation:
       back_to_game_selection: "Back to game selection"
       back_to_top: "Back to top"

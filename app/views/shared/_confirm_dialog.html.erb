@@ -1,0 +1,46 @@
+<%#
+  Confirm Dialog Partial
+
+  Required locals:
+    - id: String - unique ID for the dialog
+    - title: String - dialog title
+    - message: String - confirmation message
+    - confirm_label: String - confirm button label
+
+  Optional locals:
+    - cancel_label: String - cancel button label (default: t("shared.confirm_dialog.cancel"))
+    - danger: Boolean - if true, confirm button is styled as error (default: false)
+%>
+<% danger ||= false %>
+<% cancel_label ||= t("shared.confirm_dialog.cancel") %>
+
+<dialog
+  id="<%= id %>"
+  class="modal modal-bottom sm:modal-middle"
+  data-confirm-dialog-target="dialog"
+  data-action="click->confirm-dialog#backdropClick"
+>
+  <div class="modal-box">
+    <h3 class="font-bold text-lg"><%= title %></h3>
+    <p class="py-4 whitespace-pre-line"><%= message %></p>
+    <div class="modal-action">
+      <button
+        type="button"
+        class="btn"
+        data-action="confirm-dialog#cancel"
+      >
+        <%= cancel_label %>
+      </button>
+      <button
+        type="button"
+        class="btn <%= danger ? 'btn-error' : 'btn-primary' %>"
+        data-action="confirm-dialog#confirm"
+      >
+        <%= confirm_label %>
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

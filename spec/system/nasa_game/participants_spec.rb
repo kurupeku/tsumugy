@@ -85,7 +85,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
       session.reload.update!(phase: :individual)
       visit participant_path
 
-      accept_confirm do
+      accept_custom_confirm do
         click_button "この順位で確定する"
       end
 
@@ -118,7 +118,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
       session.reload.update!(phase: :team)
       visit participant_path
 
-      accept_confirm do
+      accept_custom_confirm do
         click_button "この順位で確定する"
       end
 
@@ -132,7 +132,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
       session.reload.update!(phase: :team)
       visit participant_path
 
-      accept_confirm do
+      accept_custom_confirm do
         click_button "この順位で確定する"
       end
 
@@ -217,7 +217,7 @@ RSpec.describe "NasaGame::Participants", type: :system do
     participant_path = join_group_as(display_name)
     session.reload.update!(phase: :individual)
     visit participant_path
-    accept_confirm { click_button "この順位で確定する" }
+    accept_custom_confirm { click_button "この順位で確定する" }
     participant_path
   end
 end

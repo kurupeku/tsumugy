@@ -4,8 +4,9 @@ module NasaGame
   class GroupRankingsController < BaseController
     include ParticipantAuthentication
 
-    before_action :authenticate_participant!
     before_action :set_group
+    before_action :authenticate_participant!
+    before_action :ensure_participant_belongs_to_group
     before_action :ensure_team_phase
     before_action :ensure_not_completed
 
@@ -24,9 +25,10 @@ module NasaGame
 
     def set_group
       @group = Group.find(params[:group_id])
+    end
 
-      # Ensure participant belongs to this group
-      unless current_participant.group_id == @group.id
+    def ensure_participant_belongs_to_group
+      unless current_participant&.group_id == @group.id
         head :forbidden
       end
     end

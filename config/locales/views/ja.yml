@@ -17,6 +17,8 @@ ja:
   shared:
     flash:
       close: "閉じる"
+    confirm_dialog:
+      cancel: "キャンセル"
     navigation:
       back_to_game_selection: "ゲーム選択に戻る"
       back_to_top: "トップに戻る"

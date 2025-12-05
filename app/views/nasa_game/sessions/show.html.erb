@@ -8,13 +8,23 @@
         <span class="text-2xl mr-2">🚀</span>
         <span class="text-xl font-bold"><%= t("nasa_game.common.game_name") %></span>
       </div>
-      <div class="flex-none">
-        <%= button_to nasa_game_session_path(@session),
+      <div class="flex-none" data-controller="confirm-dialog" data-confirm-dialog-form-id-value="terminate-session-header-form">
+        <%= form_with url: nasa_game_session_path(@session),
             method: :delete,
-            class: "btn btn-ghost btn-sm text-error",
-            data: { turbo_confirm: t(".terminate_confirm") } do %>
-          <%= t(".terminate_session") %>
+            id: "terminate-session-header-form",
+            class: "hidden" do %>
         <% end %>
+        <button type="button"
+                class="btn btn-ghost btn-sm text-error"
+                data-action="confirm-dialog#open">
+          <%= t(".terminate_session") %>
+        </button>
+        <%= render "shared/confirm_dialog",
+                   id: "terminate-session-header-modal",
+                   title: t(".terminate_session"),
+                   message: t(".terminate_confirm"),
+                   confirm_label: t(".terminate_session"),
+                   danger: true %>
       </div>
     </div>
 
@@ -50,41 +60,86 @@
         <div class="card-actions justify-center">
           <% case @session.phase %>
           <% when "lobby" %>
-            <%= button_to nasa_game_session_path(@session),
-                method: :patch,
-                params: { session: { phase: "individual" } },
-                class: "btn btn-primary btn-lg",
-                data: { turbo_confirm: t(".start_individual_confirm") } do %>
-              <%= t(".start_individual") %>
-            <% end %>
+            <div data-controller="confirm-dialog" data-confirm-dialog-form-id-value="start-individual-form">
+              <%= form_with url: nasa_game_session_path(@session),
+                  method: :patch,
+                  id: "start-individual-form",
+                  class: "hidden" do |f| %>
+                <%= f.hidden_field :phase, name: "session[phase]", value: "individual" %>
+              <% end %>
+              <button type="button"
+                      class="btn btn-primary btn-lg"
+                      data-action="confirm-dialog#open">
+                <%= t(".start_individual") %>
+              </button>
+              <%= render "shared/confirm_dialog",
+                         id: "start-individual-modal",
+                         title: t(".start_individual"),
+                         message: t(".start_individual_confirm"),
+                         confirm_label: t(".start_individual") %>
+            </div>
           <% when "individual" %>
-            <%= button_to nasa_game_session_path(@session),
-                method: :patch,
-                params: { session: { phase: "team" } },
-                class: "btn btn-secondary btn-lg",
-                data: { turbo_confirm: t(".start_team_confirm") } do %>
-              <%= t(".start_team") %>
-            <% end %>
+            <div data-controller="confirm-dialog" data-confirm-dialog-form-id-value="start-team-form">
+              <%= form_with url: nasa_game_session_path(@session),
+                  method: :patch,
+                  id: "start-team-form",
+                  class: "hidden" do |f| %>
+                <%= f.hidden_field :phase, name: "session[phase]", value: "team" %>
+              <% end %>
+              <button type="button"
+                      class="btn btn-secondary btn-lg"
+                      data-action="confirm-dialog#open">
+                <%= t(".start_team") %>
+              </button>
+              <%= render "shared/confirm_dialog",
+                         id: "start-team-modal",
+                         title: t(".start_team"),
+                         message: t(".start_team_confirm"),
+                         confirm_label: t(".start_team") %>
+            </div>
           <% when "team" %>
-            <%= button_to nasa_game_session_path(@session),
-                method: :patch,
-                params: { session: { phase: "result" } },
-                class: "btn btn-accent btn-lg",
-                data: { turbo_confirm: t(".show_results_confirm") } do %>
-              <%= t(".show_results") %>
-            <% end %>
+            <div data-controller="confirm-dialog" data-confirm-dialog-form-id-value="show-results-form">
+              <%= form_with url: nasa_game_session_path(@session),
+                  method: :patch,
+                  id: "show-results-form",
+                  class: "hidden" do |f| %>
+                <%= f.hidden_field :phase, name: "session[phase]", value: "result" %>
+              <% end %>
+              <button type="button"
+                      class="btn btn-accent btn-lg"
+                      data-action="confirm-dialog#open">
+                <%= t(".show_results") %>
+              </button>
+              <%= render "shared/confirm_dialog",
+                         id: "show-results-modal",
+                         title: t(".show_results"),
+                         message: t(".show_results_confirm"),
+                         confirm_label: t(".show_results") %>
+            </div>
           <% when "result" %>
             <div class="flex flex-col items-center gap-4">
               <div class="badge badge-success badge-lg gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-4 h-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 <%= t(".completed") %>
               </div>
-              <%= button_to nasa_game_session_path(@session),
-                  method: :delete,
-                  class: "btn btn-error btn-lg",
-                  data: { turbo_confirm: t(".terminate_confirm") } do %>
-                <%= t(".terminate_session") %>
-              <% end %>
+              <div data-controller="confirm-dialog" data-confirm-dialog-form-id-value="terminate-session-result-form">
+                <%= form_with url: nasa_game_session_path(@session),
+                    method: :delete,
+                    id: "terminate-session-result-form",
+                    class: "hidden" do %>
+                <% end %>
+                <button type="button"
+                        class="btn btn-error btn-lg"
+                        data-action="confirm-dialog#open">
+                  <%= t(".terminate_session") %>
+                </button>
+                <%= render "shared/confirm_dialog",
+                           id: "terminate-session-result-modal",
+                           title: t(".terminate_session"),
+                           message: t(".terminate_confirm"),
+                           confirm_label: t(".terminate_session"),
+                           danger: true %>
+              </div>
             </div>
           <% end %>
         </div>

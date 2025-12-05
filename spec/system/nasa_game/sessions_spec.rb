@@ -77,7 +77,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
 
         expect(page).to have_button "個人ワークを開始"
 
-        accept_confirm do
+        accept_custom_confirm do
           click_button "個人ワークを開始"
         end
 
@@ -90,7 +90,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
 
         expect(page).to have_button "チームワークを開始"
 
-        accept_confirm do
+        accept_custom_confirm do
           click_button "チームワークを開始"
         end
 
@@ -103,7 +103,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
 
         expect(page).to have_button "結果を発表"
 
-        accept_confirm do
+        accept_custom_confirm do
           click_button "結果を発表"
         end
 
@@ -138,7 +138,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         dismiss_toasts
 
         # Click the end session button in navbar and accept confirm dialog
-        accept_confirm("セッションを終了しますか？") do
+        accept_custom_confirm do
           within(".navbar") { click_button "セッションを終了" }
         end
 
@@ -155,15 +155,15 @@ RSpec.describe "NasaGame::Sessions", type: :system do
 
         # Progress through phases via UI to reach result phase
         # Lobby -> Individual
-        accept_confirm { click_button "個人ワークを開始" }
+        accept_custom_confirm { click_button "個人ワークを開始" }
         expect(page).to have_content "フェーズを更新しました"
 
         # Individual -> Team
-        accept_confirm { click_button "チームワークを開始" }
+        accept_custom_confirm { click_button "チームワークを開始" }
         expect(page).to have_content "フェーズを更新しました"
 
         # Team -> Result
-        accept_confirm { click_button "結果を発表" }
+        accept_custom_confirm { click_button "結果を発表" }
         expect(page).to have_content "フェーズを更新しました"
 
         # Result phase has a prominent end button (btn-error btn-lg)
@@ -172,7 +172,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         session_id = current_path.split("/").last
         created_session = NasaGame::Session.find(session_id)
 
-        accept_confirm do
+        accept_custom_confirm do
           find(".btn-error.btn-lg", text: "セッションを終了").click
         end
 
@@ -198,7 +198,7 @@ RSpec.describe "NasaGame::Sessions", type: :system do
         # Dismiss toast before clicking navbar button
         dismiss_toasts
 
-        accept_confirm do
+        accept_custom_confirm do
           within(".navbar") { click_button "セッションを終了" }
         end
 
