@@ -1,6 +1,11 @@
 <% content_for(:title) { t(".page_title") } %>
 
-<div class="min-h-screen flex flex-col pb-4">
+<div class="min-h-screen flex flex-col pb-4"
+     data-controller="nasa-game--session-subscription nasa-game--group-subscription"
+     data-nasa-game--session-subscription-session-id-value="<%= @session.id %>"
+     data-nasa-game--session-subscription-current-phase-value="<%= @session.phase %>"
+     data-nasa-game--group-subscription-group-id-value="<%= @group.id %>"
+     data-nasa-game--group-subscription-participant-id-value="<%= @participant.id %>">
   <%# Header %>
   <div class="navbar bg-base-100 shadow-lg sticky top-0 z-20">
     <div class="flex-1">
@@ -36,43 +41,7 @@
       </div>
     <% end %>
 
-    <div
-      id="team-ranking-list"
-      class="space-y-2"
-      data-controller="<%= @group.completed? ? '' : 'sortable' %>"
-      data-sortable-url-value="<%= nasa_game_group_group_rankings_path(@group) %>"
-    >
-      <% @group_rankings.each_with_index do |ranking, index| %>
-        <div
-          class="card bg-base-100 shadow <%= @group.completed? ? '' : 'cursor-grab active:cursor-grabbing' %> transition-all"
-          data-sortable-item
-          data-item-id="<%= ranking.item_id %>"
-        >
-          <div class="card-body p-3 flex-row items-center gap-3">
-            <%# Rank Number %>
-            <div class="badge badge-secondary badge-lg font-bold min-w-10" data-rank>
-              <%= index + 1 %>
-            </div>
-
-            <%# Item Info %>
-            <div class="flex-1 min-w-0">
-              <p class="font-medium text-sm leading-tight">
-                <%= NasaGame::Item.find(ranking.item_id).name %>
-              </p>
-            </div>
-
-            <% unless @group.completed? %>
-              <%# Drag Handle %>
-              <div class="text-base-content/30">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+    <%= render "nasa_game/participants/team_ranking_list", group: @group, group_rankings: @group_rankings %>
   </div>
 
   <%# Participant Individual Rankings (Collapsible) %>

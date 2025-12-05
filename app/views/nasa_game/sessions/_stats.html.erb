@@ -1,0 +1,32 @@
+<%# Stats Summary - rendered as partial for Action Cable updates %>
+<div id="session-stats" class="stats stats-vertical sm:stats-horizontal shadow w-full bg-base-100">
+  <div class="stat">
+    <div class="stat-figure text-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    </div>
+    <div class="stat-title"><%= t("nasa_game.sessions.show.total_participants") %></div>
+    <div class="stat-value text-primary"><%= session.participants.count %></div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-figure text-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    </div>
+    <div class="stat-title"><%= t("nasa_game.sessions.show.individual_completed") %></div>
+    <div class="stat-value text-secondary">
+      <%= session.participants.where.not(individual_completed_at: nil).count %>
+    </div>
+    <div class="stat-desc">/ <%= session.participants.count %></div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-figure text-accent">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+    </div>
+    <div class="stat-title"><%= t("nasa_game.sessions.show.team_completed") %></div>
+    <div class="stat-value text-accent">
+      <%= groups.where.not(completed_at: nil).count %>
+    </div>
+    <div class="stat-desc">/ <%= groups.count %></div>
+  </div>
+</div>

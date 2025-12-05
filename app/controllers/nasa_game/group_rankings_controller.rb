@@ -53,7 +53,10 @@ module NasaGame
       ActiveRecord::Base.transaction do
         rankings_data.each_with_index do |item_id, index|
           ranking = @group.group_rankings.find_by(item_id: item_id)
-          ranking&.update!(rank: index + 1)
+          if ranking
+            ranking.changed_by_participant_id = current_participant.id
+            ranking.update!(rank: index + 1)
+          end
         end
       end
 

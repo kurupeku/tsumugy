@@ -21,8 +21,49 @@ module NasaGame
     validates :name, presence: true
     validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+    after_update_commit :broadcast_team_completed, if: :saved_change_to_completed_at?
+
     def completed?
       completed_at.present?
+    end
+
+    def stream_name
+      "nasa_game:group:#{id}"
+    end
+
+    private
+
+    def broadcast_team_completed
+      # Notify facilitator dashboard
+      ActionCable.server.broadcast(
+        session.stream_name,
+        {
+          type: "team_completed",
+          group_id: id,
+          html: render_group_card,
+          stats_html: render_stats
+        }
+      )
+
+      # Notify group members (for Phase 4)
+      ActionCable.server.broadcast(
+        stream_name,
+        { type: "team_completed" }
+      )
+    end
+
+    def render_group_card
+      ApplicationController.render(
+        partial: "nasa_game/sessions/group_card",
+        locals: { group: self, session: session }
+      )
+    end
+
+    def render_stats
+      ApplicationController.render(
+        partial: "nasa_game/sessions/stats",
+        locals: { session: session.reload, groups: session.groups }
+      )
     end
   end
 end
