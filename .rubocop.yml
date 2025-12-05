@@ -11,6 +11,10 @@ AllCops:
 # RSpec settings
 RSpec/MultipleExpectations:
   Max: 3
+  Exclude:
+    - 'spec/system/**/*'
 
 RSpec/ExampleLength:
   Max: 10
+  Exclude:
+    - 'spec/system/**/*'

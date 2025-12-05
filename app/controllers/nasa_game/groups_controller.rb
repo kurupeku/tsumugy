@@ -5,10 +5,10 @@ module NasaGame
     include ParticipantAuthentication
 
     before_action :set_group
-    before_action :authenticate_participant!, only: [:update]
-    before_action :ensure_team_phase, only: [:update]
-    before_action :ensure_not_completed, only: [:update]
-    before_action :ensure_belongs_to_group, only: [:update]
+    before_action :authenticate_participant!, only: [ :update ]
+    before_action :ensure_team_phase, only: [ :update ]
+    before_action :ensure_not_completed, only: [ :update ]
+    before_action :ensure_belongs_to_group, only: [ :update ]
 
     def show
       # Redirect to join page if not authenticated or not in this group

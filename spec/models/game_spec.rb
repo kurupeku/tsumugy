@@ -20,11 +20,13 @@ RSpec.describe Game do
 
     it "has required fields for all games" do
       described_class.all.each do |game|
-        expect(game.slug).to be_present, "Game #{game.id} missing slug"
-        expect(game.name_ja).to be_present, "Game #{game.id} missing name_ja"
-        expect(game.name_en).to be_present, "Game #{game.id} missing name_en"
-        expect(game.icon).to be_present, "Game #{game.id} missing icon"
-        expect(game.icon_bg_class).to be_present, "Game #{game.id} missing icon_bg_class"
+        aggregate_failures "Game #{game.id} has all required fields" do
+          expect(game.slug).to be_present, "Game #{game.id} missing slug"
+          expect(game.name_ja).to be_present, "Game #{game.id} missing name_ja"
+          expect(game.name_en).to be_present, "Game #{game.id} missing name_en"
+          expect(game.icon).to be_present, "Game #{game.id} missing icon"
+          expect(game.icon_bg_class).to be_present, "Game #{game.id} missing icon_bg_class"
+        end
       end
     end
   end
