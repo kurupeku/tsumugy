@@ -1,52 +1,65 @@
 <% content_for(:title) { "セッション作成 | NASAゲーム" } %>
 
 <div class="min-h-screen flex items-center justify-center p-4">
-  <div class="card bg-base-100 shadow-xl w-full max-w-md">
-    <div class="card-body">
-      <%# Header %>
-      <div class="text-center mb-6">
-        <div class="text-6xl mb-4">🚀</div>
-        <h1 class="card-title justify-center text-2xl">NASAゲーム</h1>
-        <p class="text-base-content/70">月面からの脱出</p>
-      </div>
-
-      <%# Form %>
-      <%= form_with url: nasa_game_sessions_path, method: :post, class: "space-y-6" do |f| %>
-        <div class="form-control">
-          <label class="label" for="group_count">
-            <span class="label-text text-lg">グループ数</span>
-          </label>
-          <input
-            type="number"
-            id="group_count"
-            name="group_count"
-            min="1"
-            max="20"
-            value="4"
-            class="input input-bordered input-lg w-full text-center text-2xl"
-            required
-          />
-          <label class="label">
-            <span class="label-text-alt text-base-content/60">
-              1〜20グループまで作成できます
-            </span>
-          </label>
-        </div>
-
-        <div class="card-actions">
-          <%= f.submit "セッションを作成", class: "btn btn-primary btn-lg w-full" %>
-        </div>
+  <div class="w-full max-w-md">
+    <%# Navigation - カード外上部に配置 %>
+    <div class="mb-3">
+      <%= link_to root_path, class: "inline-flex items-center gap-1 text-sm text-base-content/60 hover:text-base-content transition-colors" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        ゲーム選択に戻る
       <% end %>
+    </div>
 
-      <%# Info %>
-      <div class="divider">ゲームの流れ</div>
-      <ul class="steps steps-vertical text-sm">
-        <li class="step step-primary">グループURLを参加者に共有</li>
-        <li class="step">参加者がロビーに集合</li>
-        <li class="step">個人ワーク開始</li>
-        <li class="step">チームワーク開始</li>
-        <li class="step">結果発表</li>
-      </ul>
+    <%# Card %>
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <%# Header %>
+        <div class="text-center mb-6">
+          <div class="text-6xl mb-4">🚀</div>
+          <h1 class="card-title justify-center text-2xl">NASAゲーム</h1>
+          <p class="text-base-content/70">月面からの脱出</p>
+        </div>
+
+        <%# Form %>
+        <%= form_with url: nasa_game_sessions_path, method: :post, class: "space-y-6" do |f| %>
+          <div class="form-control">
+            <label class="label" for="group_count">
+              <span class="label-text text-lg">グループ数</span>
+            </label>
+            <input
+              type="number"
+              id="group_count"
+              name="group_count"
+              min="1"
+              max="20"
+              value="4"
+              class="input input-bordered input-lg w-full text-center text-2xl"
+              required
+            />
+            <label class="label">
+              <span class="label-text-alt text-base-content/60">
+                1〜20グループまで作成できます
+              </span>
+            </label>
+          </div>
+
+          <div class="card-actions">
+            <%= f.submit "セッションを作成", class: "btn btn-primary btn-lg w-full" %>
+          </div>
+        <% end %>
+
+        <%# Info %>
+        <div class="divider">ゲームの流れ</div>
+        <ul class="steps steps-vertical text-sm">
+          <li class="step step-primary">グループURLを参加者に共有</li>
+          <li class="step">参加者がロビーに集合</li>
+          <li class="step">個人ワーク開始</li>
+          <li class="step">チームワーク開始</li>
+          <li class="step">結果発表</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
