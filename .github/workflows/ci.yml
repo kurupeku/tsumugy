@@ -90,10 +90,10 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Set up database
-        run: bin/rails db:test:prepare
+        run: bin/rails db:setup
 
       - name: Run model specs
-        run: bin/rspec spec/models --format progress
+        run: bundle exec rspec spec/models --format progress
 
       - name: Run system specs
-        run: bin/rspec spec/system --format progress
+        run: bundle exec rspec spec/system --format progress
